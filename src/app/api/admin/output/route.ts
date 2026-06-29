@@ -8,16 +8,15 @@ export async function OPTIONS() {
 export async function GET(req: Request) {
   if (!verifyOperatorSecret(req)) return forbidden()
   const db = await operatorAdminClient()
-  const { data, error } = await db.from('business_types').select('*').order('name')
-  if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders() })
-  return NextResponse.json(data, { headers: corsHeaders() })
-}
-
-export async function POST(req: Request) {
-  if (!verifyOperatorSecret(req)) return forbidden()
-  const db = await operatorAdminClient()
-  const { name } = await req.json()
-  const { data, error } = await db.from('business_types').insert({ name }).select().single()
+  const url = new URL(req.url)
+  const businessId = url.searchParams.get('businessId')
+  let query = db
+    .from('documents')
+    .select('*, businesses(name)')
+    .eq('is_active', true)
+    .order('created_at', { ascending: false })
+  if (businessId) query = query.eq('business_id', businessId)
+  const { data, error } = await query
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders() })
   return NextResponse.json(data, { headers: corsHeaders() })
 }

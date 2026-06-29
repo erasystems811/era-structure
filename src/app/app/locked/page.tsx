@@ -17,5 +17,5 @@ export default async function LockedPage() {
 
   if (!business?.is_locked) redirect('/app/assessment')
 
-  return <LockedScreen business={business} businessId={profile?.business_id ?? ''} />
+  return <LockedScreen business={business} />
 }

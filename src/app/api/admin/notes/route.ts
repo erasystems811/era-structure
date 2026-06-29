@@ -1,11 +1,26 @@
-import { createClient } from '@/lib/supabase/server'
+import { verifyOperatorSecret, operatorAdminClient, forbidden, corsHeaders } from '@/lib/operator-auth'
 import { NextResponse } from 'next/server'
 
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: corsHeaders() })
+}
+
+export async function GET(req: Request) {
+  if (!verifyOperatorSecret(req)) return forbidden()
+  const db = await operatorAdminClient()
+  const url = new URL(req.url)
+  const businessId = url.searchParams.get('businessId')
+  if (!businessId) return NextResponse.json({ error: 'businessId required' }, { status: 400, headers: corsHeaders() })
+  const { data, error } = await db.from('admin_notes').select('*').eq('business_id', businessId).order('created_at', { ascending: false })
+  if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders() })
+  return NextResponse.json(data, { headers: corsHeaders() })
+}
+
 export async function POST(req: Request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!verifyOperatorSecret(req)) return forbidden()
+  const db = await operatorAdminClient()
   const { business_id, note } = await req.json()
-  await supabase.from('admin_notes').insert({ business_id, note, created_by: user.email })
-  return NextResponse.json({ success: true })
+  const { error } = await db.from('admin_notes').insert({ business_id, note, created_by: 'ERA Hub' })
+  if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders() })
+  return NextResponse.json({ success: true }, { headers: corsHeaders() })
 }
