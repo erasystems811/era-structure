@@ -7,7 +7,7 @@ export async function OPTIONS() {
 
 export async function GET(req: Request) {
   if (!verifyOperatorSecret(req)) return forbidden()
-  const db = await operatorAdminClient()
+  const db = operatorAdminClient()
   const url = new URL(req.url)
   const businessId = url.searchParams.get('businessId')
   if (!businessId) return NextResponse.json({ error: 'businessId required' }, { status: 400, headers: corsHeaders() })
@@ -18,7 +18,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   if (!verifyOperatorSecret(req)) return forbidden()
-  const db = await operatorAdminClient()
+  const db = operatorAdminClient()
   const { business_id, note } = await req.json()
   const { error } = await db.from('admin_notes').insert({ business_id, note, created_by: 'ERA Hub' })
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders() })

@@ -7,7 +7,7 @@ export async function OPTIONS() {
 
 export async function GET(req: Request) {
   if (!verifyOperatorSecret(req)) return forbidden()
-  const db = await operatorAdminClient()
+  const db = operatorAdminClient()
   const url = new URL(req.url)
   const status = url.searchParams.get('status') ?? 'pending'
   const { data, error } = await db
@@ -21,7 +21,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   if (!verifyOperatorSecret(req)) return forbidden()
-  const db = await operatorAdminClient()
+  const db = operatorAdminClient()
   const { report_id, admin_notes } = await req.json()
 
   const { error } = await db.from('reports').update({

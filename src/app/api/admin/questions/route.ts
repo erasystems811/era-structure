@@ -7,7 +7,7 @@ export async function OPTIONS() {
 
 export async function GET(req: Request) {
   if (!verifyOperatorSecret(req)) return forbidden()
-  const db = await operatorAdminClient()
+  const db = operatorAdminClient()
   const url = new URL(req.url)
   const businessTypeId = url.searchParams.get('businessTypeId')
   const layer = url.searchParams.get('layer')
@@ -21,7 +21,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   if (!verifyOperatorSecret(req)) return forbidden()
-  const db = await operatorAdminClient()
+  const db = operatorAdminClient()
   const body = await req.json()
   const { error, data } = await db.from('questions').insert(body).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders() })
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
 export async function PATCH(req: Request) {
   if (!verifyOperatorSecret(req)) return forbidden()
-  const db = await operatorAdminClient()
+  const db = operatorAdminClient()
   const { id, ...updates } = await req.json()
   const { error, data } = await db.from('questions').update({ ...updates, updated_at: new Date().toISOString() }).eq('id', id).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders() })
@@ -39,7 +39,7 @@ export async function PATCH(req: Request) {
 
 export async function DELETE(req: Request) {
   if (!verifyOperatorSecret(req)) return forbidden()
-  const db = await operatorAdminClient()
+  const db = operatorAdminClient()
   const { id } = await req.json()
   const { error } = await db.from('questions').update({ is_active: false }).eq('id', id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders() })

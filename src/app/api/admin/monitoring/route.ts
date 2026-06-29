@@ -7,7 +7,7 @@ export async function OPTIONS() {
 
 export async function GET(req: Request) {
   if (!verifyOperatorSecret(req)) return forbidden()
-  const db = await operatorAdminClient()
+  const db = operatorAdminClient()
 
   const [
     { data: businesses },

@@ -7,7 +7,7 @@ export async function OPTIONS() {
 
 export async function GET(req: Request) {
   if (!verifyOperatorSecret(req)) return forbidden()
-  const db = await operatorAdminClient()
+  const db = operatorAdminClient()
   const { data, error } = await db
     .from('businesses')
     .select('*, business_types(name), owner_profiles(user_id)')
@@ -20,7 +20,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   if (!verifyOperatorSecret(req)) return forbidden()
   const { name, owner_name, owner_phone, owner_email, business_type_id, password } = await req.json()
-  const db = await operatorAdminClient()
+  const db = operatorAdminClient()
 
   const { data: authData, error: authError } = await db.auth.admin.createUser({
     email: owner_email,

@@ -6,7 +6,7 @@ export function verifyOperatorSecret(req: Request): boolean {
   return !!secret && secret === process.env.STRUCTURE_OPERATOR_SECRET
 }
 
-export async function operatorAdminClient() {
+export function operatorAdminClient() {
   return createAdminClient()
 }
 
