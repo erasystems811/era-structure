@@ -11,7 +11,7 @@ export async function operatorAdminClient() {
 }
 
 export function forbidden() {
-  return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  return NextResponse.json({ error: 'Forbidden' }, { status: 403, headers: corsHeaders() })
 }
 
 export function corsHeaders() {
