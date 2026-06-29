@@ -2,6 +2,13 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function proxy(request: NextRequest) {
+  const path = request.nextUrl.pathname
+
+  // Admin API and webhooks use their own auth — skip Supabase entirely
+  if (path.startsWith('/api/admin') || path.startsWith('/api/webhooks')) {
+    return NextResponse.next({ request })
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -22,10 +29,9 @@ export async function proxy(request: NextRequest) {
   )
 
   const { data: { user } } = await supabase.auth.getUser()
-  const path = request.nextUrl.pathname
 
-  // Public routes — admin API uses X-Operator-Secret, not Supabase session
-  if (path === '/login' || path.startsWith('/api/admin') || path.startsWith('/api/webhooks')) {
+  // Public routes
+  if (path === '/login') {
     return supabaseResponse
   }
 
