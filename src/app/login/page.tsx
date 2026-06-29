@@ -36,7 +36,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-[#F4F2EE] flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="flex justify-center mb-8">
-          <ERALogo size="lg" />
+          <ERALogo size="lg" variant="full" />
         </div>
 
         <div className="bg-white rounded-2xl border border-[#0D1B3E]/8 shadow-sm p-8">
