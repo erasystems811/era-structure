@@ -24,8 +24,8 @@ export async function proxy(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   const path = request.nextUrl.pathname
 
-  // Public routes
-  if (path === '/login' || path.startsWith('/api/webhooks')) {
+  // Public routes — admin API uses X-Operator-Secret, not Supabase session
+  if (path === '/login' || path.startsWith('/api/admin') || path.startsWith('/api/webhooks')) {
     return supabaseResponse
   }
 
