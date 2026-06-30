@@ -256,6 +256,13 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
         </Card>
 
         {/* Dynamic questions by block */}
+        {questions.length === 0 && (
+          <Card>
+            <CardBody>
+              <p className="text-sm text-[#999] text-center py-2">Assessment questions are being set up — check back shortly.</p>
+            </CardBody>
+          </Card>
+        )}
         {['A', 'B', 'C', 'D', 'E', 'F'].map(block => {
           const blockQs = questions.filter(q => q.block === block)
           if (blockQs.length === 0) return null

@@ -18,7 +18,7 @@ export default async function AssessmentPage() {
     .eq('id', businessId)
     .single()
 
-  const bizTypeId = (business as unknown as { business_types: { id: string } | null })?.business_types?.id ?? ''
+  const bizTypeId = (business as unknown as { business_type_id: string })?.business_type_id ?? ''
 
   const [
     { data: layer1 },
