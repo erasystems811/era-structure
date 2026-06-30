@@ -12,17 +12,18 @@ export async function GET(req: Request) {
   const businessId = url.searchParams.get('business_id')
   if (!businessId) return NextResponse.json({ error: 'business_id required' }, { status: 400, headers: corsHeaders() })
 
+  const { data: business } = await db.from('businesses').select('business_type_id').eq('id', businessId).single()
+  const bizTypeId = (business as unknown as { business_type_id: string } | null)?.business_type_id ?? ''
+
   const [
-    { data: business },
     { data: layer1 },
     { data: layer2 },
     { data: questions },
     { data: staff },
   ] = await Promise.all([
-    db.from('businesses').select('*, business_types(name, id)').eq('id', businessId).single(),
     db.from('layer1_responses').select('answers').eq('business_id', businessId).maybeSingle(),
     db.from('layer2_responses').select('answers').eq('business_id', businessId).maybeSingle(),
-    db.from('questions').select('id, block, question_text, layer').eq('business_type_id', (business as unknown as { business_type_id: string })?.business_type_id ?? '').eq('is_active', true).order('order_index'),
+    db.from('questions').select('id, block, question_text, layer').eq('business_type_id', bizTypeId).eq('is_active', true).order('order_index'),
     db.from('staff_members').select('name, role').eq('business_id', businessId).eq('is_active', true),
   ])
 
