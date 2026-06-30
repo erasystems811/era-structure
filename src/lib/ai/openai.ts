@@ -109,6 +109,9 @@ LAYER 1 is a self-assessment the owner completed about their business. It covers
 
 LAYER 2 is a direct interview with the owner (and staff if any). It captures daily tasks, decision-making, stress points, undocumented work, cash handling, customer complaints, and future goals. This is where reality lives. Cross-reference it against Layer 1 to find the gaps between perception and reality.
 
+SOP LIST RULE — READ THIS CAREFULLY:
+The sop_list is NOT a list of problems to fix. It is a complete inventory of every repeatable process this business performs — whether that process is currently working perfectly or is broken. If the business opens its doors and does something more than once, there should be an SOP for it. Opening and closing the shop, serving a customer, handling cash, taking an order, dealing with a complaint, onboarding a new staff member, posting on social media, restocking — all of it. A well-run process still needs an SOP so the owner is not the only person who knows how to do it. A broken process needs one even more. The priority field tells the owner which to write first: "Urgent" means its absence is costing money today; "Important" means it exists only in someone's head; "Standard" means it's informal and just needs to be written down. current_state tells them what currently exists. The list should be long — a typical small business has 20-40 documented processes. A short SOP list means you missed things.
+
 CRITICAL CONTEXT RULES — NEVER VIOLATE THESE:
 - If this is a solo operator (no staff), "everything going back to the owner" is NOT a structural problem — it is expected. Do not flag it as a contradiction or a finding. Solo operator problems are different: single point of failure, capacity ceiling, burnout, and inability to grow without first documenting their own processes.
 - A contradiction is only valid if what the owner believes is measurably different from what the data shows. Do not manufacture contradictions by comparing a goal to a current reality — that is "a gap to close," not a contradiction. Only include this section if real contradictions exist.
@@ -214,7 +217,8 @@ Return this exact JSON structure:
     {
       "title": "Specific SOP name — e.g. 'Daily Cash Reconciliation Procedure'",
       "responsible": "Name or role who owns and executes this SOP",
-      "priority": "Urgent | Important | Standard"
+      "priority": "Urgent | Important | Standard",
+      "current_state": "Exists and documented | Exists but undocumented | Inconsistent | Missing entirely"
     }
   ],
 
