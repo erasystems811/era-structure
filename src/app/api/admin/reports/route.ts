@@ -51,11 +51,12 @@ export async function POST(req: Request) {
     .eq('id', reportRow.business_id)
     .single()
 
-  // Send notification first — release is blocked until comms confirms
+  // Send notification first — release is blocked until at least one channel delivers
   if (biz) {
     const portalUrl = process.env.ERA_STRUCTURE_CLIENT_URL ?? 'https://era-structure-client.railway.app'
+    let results: { whatsapp: string; email: string }
     try {
-      await notify(reportReadyNotification({
+      results = await notify(reportReadyNotification({
         ownerName:    biz.owner_name,
         businessName: biz.name,
         ownerPhone:   biz.owner_phone,
@@ -65,6 +66,19 @@ export async function POST(req: Request) {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'ERA Comms notification failed'
       return NextResponse.json({ error: message }, { status: 502, headers: corsHeaders() })
+    }
+
+    // At least one channel must have actually sent — 'skipped' alone is not enough
+    const delivered = results.whatsapp === 'sent' || results.email === 'sent'
+    if (!delivered) {
+      const detail: string[] = []
+      if (results.whatsapp === 'failed') detail.push('WhatsApp delivery failed')
+      if (results.email === 'failed') detail.push('Email delivery failed')
+      if (results.whatsapp === 'skipped' && results.email === 'skipped') detail.push('No phone number or email on file for this owner')
+      return NextResponse.json(
+        { error: `Could not deliver notification to owner. Report not released. ${detail.join('. ')}.` },
+        { status: 502, headers: corsHeaders() }
+      )
     }
   }
 
