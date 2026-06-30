@@ -156,6 +156,23 @@ Every single activity this specific business does must be broken down to this le
 
 A well-run process still needs an SOP so it doesn't live only in someone's head. A broken process needs one even more. The priority field tells the owner which to write first: "Urgent" means its absence is costing money today; "Important" means it exists only in someone's head; "Standard" means it's informal and just needs to be written down. current_state tells them what currently exists. The list should be long — a typical small business has 20-40 individual processes. A short list or a list with broad umbrella titles means you missed things.
 
+REVENUE LEAKAGE CALCULATION RULE — THIS IS NON-NEGOTIABLE:
+Every naira figure in revenue_leakage must be derived from numbers the owner actually provided. No invented prices. No assumed volumes. No generic "industry estimates."
+
+HOW TO CALCULATE A LEAK:
+1. Identify the actual process failure from the data (e.g. "no follow-up on unconverted enquiries")
+2. Find the owner's real numbers to anchor it: their stated revenue, their stated transaction value or price, their stated customer volume, their stated daily/weekly/monthly frequency
+3. Calculate: [missed transactions or lost amount] × [frequency] × [owner's own price or margin]
+4. Show the exact chain: "Owner stated ₦X per job. Owner stated Y jobs per week. If 2 out of Y are lost to no follow-up, that is ₦X × 2 × 4.3 weeks = ₦Z/month"
+
+WHAT TO DO WHEN THE DATA IS INSUFFICIENT:
+If the owner did not give you a price, a volume, or a frequency you need to calculate a specific leak — do NOT invent it. Instead, set monthly_min and monthly_max both to 0 and write in calculation_note: "Cannot quantify — owner did not provide [specific missing figure]. Ask owner: [exact question that would give you the number]." A leak with 0 and an honest note is more valuable than a leak with a fabricated ₦50,000.
+
+WHAT NOT TO DO:
+- Do not use "average Nigerian SME" estimates — this is not the average business, it is THIS business
+- Do not multiply vague "missed opportunity" by a round number you invented
+- Do not change the figures on regeneration unless the underlying data changed — if the owner said ₦150,000 monthly revenue, that anchor does not move
+
 CRITICAL CONTEXT RULES — NEVER VIOLATE THESE:
 - If this is a solo operator (no staff), "everything going back to the owner" is NOT a structural problem — it is expected. Do not flag it as a contradiction or a finding. Solo operator problems are different: single point of failure, capacity ceiling, burnout, and inability to grow without first documenting their own processes.
 - A contradiction is only valid if what the owner believes is measurably different from what the data shows. Do not manufacture contradictions by comparing a goal to a current reality — that is "a gap to close," not a contradiction. Only include this section if real contradictions exist.
@@ -214,11 +231,11 @@ Return this exact JSON structure:
   "revenue_leakage": [
     {
       "title": "Short name for this leak",
-      "description": "Exactly what is happening and why money is leaving.",
+      "description": "Exactly what is happening and why money is leaving. Name the specific process failure.",
       "frequency": "Daily / Weekly / Per transaction / Monthly",
       "monthly_min": 0,
       "monthly_max": 0,
-      "calculation_note": "How you arrived at this figure. Show the logic."
+      "calculation_note": "Show the exact calculation chain using ONLY numbers the owner actually stated. Format: 'Owner stated ₦X per [unit]. Owner stated Y [units] per [period]. [Z]% estimated lost due to [specific failure] = ₦X × Z × frequency = ₦result/month.' If you cannot calculate from real data, set both figures to 0 and write: 'Cannot quantify — owner did not provide [specific missing data]. Ask owner: [exact question].'"
     }
   ],
 
