@@ -391,6 +391,156 @@ Return this exact JSON structure:
   return JSON.parse(response.choices[0].message.content ?? '{}')
 }
 
+const SECTION_SCHEMAS: Record<string, string> = {
+  executive_summary: `{
+  "situation": "1-2 sentences. What this business is and what was assessed.",
+  "complication": "1-3 sentences. The specific structural problem the data reveals.",
+  "resolution": ["Top 3-5 priority findings as bold declarative sentences."]
+}`,
+  business_snapshot: `{
+  "type": "business type",
+  "staff_count": 0,
+  "owner_stated_problem": "Direct quote or close paraphrase.",
+  "current_stage": "Survival | Stabilisation | Growth",
+  "one_line_diagnosis": "The single most important structural problem in one sentence."
+}`,
+  key_findings: `[
+  {
+    "headline": "One declarative sentence the owner could NOT have written themselves.",
+    "evidence": "The specific data point from their answers that proves this.",
+    "root_cause": "The structural reason — one level deeper than obvious.",
+    "impact": "What this costs in naira, time, or operational risk.",
+    "category": "owner_dependency | process_gap | financial_visibility | staff_clarity | customer_experience | revenue_leakage | decision_bottleneck | growth_ceiling"
+  }
+]`,
+  contradiction_analysis: `[
+  { "owner_stated": "What the owner said.", "reality": "What the data shows." }
+]`,
+  revenue_leakage: `[
+  {
+    "title": "Short name",
+    "description": "What is happening and why money is leaving.",
+    "frequency": "Daily | Weekly | Per transaction | Monthly",
+    "monthly_min": 0,
+    "monthly_max": 0,
+    "calculation_note": "Show the logic."
+  }
+]`,
+  structural_gaps: `[
+  { "gap": "Missing process, system, or clarity.", "severity": "Critical | High | Medium", "impact": "What breaks because this gap exists." }
+]`,
+  priority_actions: `{
+  "immediate": [{ "action": "Verb-led instruction.", "owner": "Who does this.", "success_looks_like": "How you know it's done." }],
+  "short_term": [{ "action": "...", "owner": "...", "success_looks_like": "..." }],
+  "medium_term": [{ "action": "...", "owner": "...", "success_looks_like": "..." }]
+}`,
+  sop_list: `[
+  {
+    "title": "Specific individual process — e.g. 'How to respond to a new WhatsApp enquiry'",
+    "responsible": "Name or role",
+    "priority": "Urgent | Important | Standard",
+    "current_state": "Exists and documented | Exists but undocumented | Inconsistent | Missing entirely"
+  }
+]`,
+  delegation_readiness: `[
+  {
+    "person": "Name",
+    "role": "Role",
+    "tasks_to_absorb": "Specific tasks they could take from the owner.",
+    "what_they_need_first": "Training / Documentation / Authority / Nothing",
+    "risk_note": "What could go wrong and how to mitigate."
+  }
+]`,
+  vision_90_days: `["Specific measurable outcome", "Another outcome"]`,
+  closing_assessment: `"One paragraph written directly to the owner. Honest, direct, human. No corporate language."`,
+  org_structure: `{
+  "current": {
+    "people": [{ "name": "...", "title": "...", "actual_roles": ["..."], "overload_note": "..." }],
+    "structural_problems": ["..."]
+  },
+  "ideal": {
+    "positions": [{ "title": "...", "focus": "...", "reports_to": null, "status": "exists | needs to be hired | can be assigned internally", "hire_priority": 1 }],
+    "hiring_sequence": ["First hire: ..."],
+    "immediate_restructure": ["Action without hiring..."]
+  }
+}`,
+  process_map: `[
+  {
+    "process_name": "...",
+    "current_flow": ["Step 1", "Step 2"],
+    "current_owner_involvement": "...",
+    "current_problems": ["..."],
+    "ideal_flow": ["Step 1", "Step 2"],
+    "ideal_owner_involvement": "...",
+    "what_changes": "The single structural change that unlocks this."
+  }
+]`,
+  eisenhower_matrix: `{
+  "q1_do": [{ "task": "...", "source": "assessment | suggested", "note": "Why urgent AND important" }],
+  "q2_schedule": [{ "task": "...", "source": "...", "note": "..." }],
+  "q3_delegate": [{ "task": "...", "source": "...", "note": "..." }],
+  "q4_eliminate": [{ "task": "...", "source": "...", "note": "..." }]
+}`,
+}
+
+export async function generateSection(
+  section: string,
+  instruction: string,
+  layer1: Record<string, unknown>,
+  layer2: Record<string, unknown>,
+  businessType: string,
+  businessName: string,
+  staffMembers: { name: string; role: string }[],
+  existingReport: Record<string, unknown>
+): Promise<unknown> {
+  const schema = SECTION_SCHEMAS[section]
+  if (!schema) throw new Error(`Unknown section: ${section}`)
+
+  const staffBlock = staffMembers.length > 0
+    ? staffMembers.map(s => `- ${s.name}: ${s.role}`).join('\n')
+    : 'Solo operator — no staff'
+
+  const response = await openai.chat.completions.create({
+    model: 'gpt-4o',
+    temperature: 0.3,
+    messages: [
+      { role: 'system', content: MASTER_PROMPT },
+      {
+        role: 'user',
+        content: `You are regenerating ONLY the "${section}" section of a diagnostic report for ${businessName} — a ${businessType} business.
+
+STAFF:
+${staffBlock}
+
+LAYER 1 — SELF-ASSESSMENT:
+${JSON.stringify(layer1, null, 2)}
+
+LAYER 2 — OWNER & TEAM INTERVIEW:
+${JSON.stringify(layer2, null, 2)}
+
+EXISTING REPORT (for context — use this to stay consistent with findings already made in other sections):
+${JSON.stringify(existingReport, null, 2)}
+
+${instruction ? `SPECIFIC INSTRUCTION FROM THE OPERATOR:\n${instruction}\n\nThis instruction takes priority. Adjust the section to reflect it while staying grounded in the business data.` : 'No specific instruction — regenerate this section with improved quality and specificity.'}
+
+Return ONLY the JSON value for the "${section}" field — exactly matching this schema:
+${schema}
+
+Do not wrap in an outer object. Return just the value directly.`,
+      },
+    ],
+    response_format: { type: 'json_object' },
+  })
+
+  const raw = JSON.parse(response.choices[0].message.content ?? '{}')
+  // The model wraps in json_object mode — unwrap if it returned { [section]: value }
+  if (Object.keys(raw).length === 1) {
+    const key = Object.keys(raw)[0]
+    return raw[key]
+  }
+  return raw
+}
+
 export async function buildSopFromTranscription(
   transcription: string,
   businessType: string,
