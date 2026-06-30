@@ -1,5 +1,5 @@
 export const dynamic = 'force-dynamic'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { AssessmentFlow } from '@/components/client/AssessmentFlow'
 
@@ -19,6 +19,7 @@ export default async function AssessmentPage() {
     .single()
 
   const bizTypeId = (business as unknown as { business_type_id: string })?.business_type_id ?? ''
+  const admin = createAdminClient()
 
   const [
     { data: layer1 },
@@ -32,7 +33,7 @@ export default async function AssessmentPage() {
     supabase.from('observation_schedule').select('*').eq('business_id', businessId).maybeSingle(),
     supabase.from('layer2_responses').select('*').eq('business_id', businessId).maybeSingle(),
     supabase.from('reports').select('*').eq('business_id', businessId).eq('status', 'released').maybeSingle(),
-    supabase.from('questions').select('*').eq('business_type_id', bizTypeId).eq('layer', 1).eq('is_active', true).order('order_index'),
+    admin.from('questions').select('*').eq('business_type_id', bizTypeId).eq('layer', 1).eq('is_active', true).order('order_index'),
     supabase.from('staff_members').select('*').eq('business_id', businessId).eq('is_active', true),
   ])
 
