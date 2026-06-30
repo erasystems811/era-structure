@@ -49,7 +49,6 @@ export async function POST(req: Request) {
     .from('reports')
     .update({ generated_content: content, generated_at: new Date().toISOString() })
     .eq('business_id', business_id)
-    .eq('status', 'pending')
     .select()
     .single()
 
