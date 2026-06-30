@@ -45,6 +45,19 @@ export async function PATCH(req: Request) {
   return NextResponse.json({ success: true, business: data }, { headers: corsHeaders() })
 }
 
+export async function DELETE(req: Request) {
+  if (!verifyOperatorSecret(req)) return forbidden()
+  const { id } = await req.json()
+  if (!id) return NextResponse.json({ error: 'id required' }, { status: 400, headers: corsHeaders() })
+  const db = operatorAdminClient()
+
+  const { data: profile } = await db.from('owner_profiles').select('user_id').eq('business_id', id).single()
+  await db.from('businesses').delete().eq('id', id)
+  if (profile?.user_id) await db.auth.admin.deleteUser(profile.user_id)
+
+  return NextResponse.json({ success: true }, { headers: corsHeaders() })
+}
+
 export async function POST(req: Request) {
   if (!verifyOperatorSecret(req)) return forbidden()
   const { name, owner_name, owner_phone, owner_email, business_type_id, password } = await req.json()
