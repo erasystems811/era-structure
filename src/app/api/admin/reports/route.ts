@@ -68,15 +68,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: message }, { status: 502, headers: corsHeaders() })
     }
 
-    // At least one channel must have actually sent — 'skipped' alone is not enough
-    const delivered = results.whatsapp === 'sent' || results.email === 'sent'
-    if (!delivered) {
-      const detail: string[] = []
-      if (results.whatsapp === 'failed') detail.push('WhatsApp delivery failed')
-      if (results.email === 'failed') detail.push('Email delivery failed')
-      if (results.whatsapp === 'skipped' && results.email === 'skipped') detail.push('No phone number or email on file for this owner')
+    // WhatsApp delivery is required — email alone is not enough
+    if (results.whatsapp !== 'sent') {
+      const reason =
+        results.whatsapp === 'failed'  ? 'WhatsApp message failed to deliver. Check that a session is connected in ERA Comms.' :
+        results.whatsapp === 'skipped' ? 'Owner has no phone number on file — add their WhatsApp number to their account first.' :
+        'WhatsApp was not sent.'
       return NextResponse.json(
-        { error: `Could not deliver notification to owner. Report not released. ${detail.join('. ')}.` },
+        { error: `Report not released. ${reason}` },
         { status: 502, headers: corsHeaders() }
       )
     }
