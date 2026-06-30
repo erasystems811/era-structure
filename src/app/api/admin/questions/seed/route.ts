@@ -102,17 +102,21 @@ export async function OPTIONS() {
 
 export async function POST(req: Request) {
   if (!verifyOperatorSecret(req)) return forbidden()
-  const { business_type_id } = await req.json()
+  const { business_type_id, layer } = await req.json()
   if (!business_type_id) return NextResponse.json({ error: 'business_type_id required' }, { status: 400, headers: corsHeaders() })
 
   const db = operatorAdminClient()
 
-  // Clear existing questions for this type
-  await db.from('questions').delete().eq('business_type_id', business_type_id)
+  const seedLayer1 = !layer || layer === 1
+  const seedLayer2 = !layer || layer === 2
+
+  // Only delete the layer(s) being reseeded
+  if (seedLayer1) await db.from('questions').delete().eq('business_type_id', business_type_id).eq('layer', 1)
+  if (seedLayer2) await db.from('questions').delete().eq('business_type_id', business_type_id).eq('layer', 2)
 
   const rows = [
-    ...LAYER1.map(q => ({ ...q, business_type_id, layer: 1 })),
-    ...LAYER2.map(q => ({ ...q, business_type_id, layer: 2 })),
+    ...(seedLayer1 ? LAYER1.map(q => ({ ...q, business_type_id, layer: 1 })) : []),
+    ...(seedLayer2 ? LAYER2.map(q => ({ ...q, business_type_id, layer: 2 })) : []),
   ]
 
   const { error } = await db.from('questions').insert(rows)
