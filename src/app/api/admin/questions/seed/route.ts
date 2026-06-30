@@ -47,54 +47,53 @@ const LAYER1: { block: string; question_text: string; input_type: string; option
 ]
 
 const LAYER2: { block: string; question_text: string; input_type: string; options: string[] | null; order_index: number }[] = [
-  // Block A — Financial Depth
-  { block:'A', question_text:'Do you have audited or formally reviewed financial statements for the past year?', input_type:'yes-no', options:null, order_index:1 },
-  { block:'A', question_text:'What is your current gross profit margin (%)?', input_type:'number', options:null, order_index:2 },
-  { block:'A', question_text:'Do you prepare an annual budget before the start of each year?', input_type:'yes-no', options:null, order_index:3 },
-  { block:'A', question_text:'Do you have a credit facility, overdraft, or loan line with any bank?', input_type:'yes-no', options:null, order_index:4 },
-  { block:'A', question_text:'How many months of operating expenses do you have saved as a cash reserve?', input_type:'number', options:null, order_index:5 },
-  { block:'A', question_text:'Do you use financial forecasting (projecting future revenue or costs)?', input_type:'yes-no', options:null, order_index:6 },
-  { block:'A', question_text:'Are all your income streams (revenue sources) clearly separated and tracked?', input_type:'yes-no', options:null, order_index:7 },
-  { block:'A', question_text:'Do you have a plan for reinvesting profit back into the business?', input_type:'yes-no', options:null, order_index:8 },
-  // Block B — Operational Depth
-  { block:'B', question_text:'Do you have documented Standard Operating Procedures (SOPs) for key processes?', input_type:'yes-no', options:null, order_index:9 },
-  { block:'B', question_text:'How do you currently measure operational efficiency or output quality?', input_type:'short-text', options:null, order_index:10 },
-  { block:'B', question_text:'Do you conduct regular quality checks on your products or service delivery?', input_type:'yes-no', options:null, order_index:11 },
-  { block:'B', question_text:'Do you have a business continuity plan (what happens if you or a key person is unavailable)?', input_type:'yes-no', options:null, order_index:12 },
-  { block:'B', question_text:'Do you have any industry certifications, licences, or permits currently active?', input_type:'yes-no', options:null, order_index:13 },
-  { block:'B', question_text:'How frequently do you review and update your operational processes?', input_type:'dropdown', options:['Never','Yearly','Every 6 months','Quarterly','Monthly'], order_index:14 },
-  { block:'B', question_text:'Do you have a documented supplier agreement or procurement policy?', input_type:'yes-no', options:null, order_index:15 },
-  // Block C — HR & Organisation
-  { block:'C', question_text:'Do you have an organisational chart that shows reporting lines?', input_type:'yes-no', options:null, order_index:16 },
-  { block:'C', question_text:'Do you conduct formal performance reviews for your staff?', input_type:'yes-no', options:null, order_index:17 },
-  { block:'C', question_text:'Do you have written HR policies (leave, disciplinary procedures, code of conduct)?', input_type:'yes-no', options:null, order_index:18 },
-  { block:'C', question_text:'Do you have a succession plan for any critical role in the business?', input_type:'yes-no', options:null, order_index:19 },
-  { block:'C', question_text:'What is your approximate staff turnover rate per year (%)?', input_type:'number', options:null, order_index:20 },
-  { block:'C', question_text:'Do you comply with Nigerian Labour Act requirements (pension, NSITF, ITF, etc.)?', input_type:'yes-no', options:null, order_index:21 },
-  { block:'C', question_text:'How do you handle onboarding of new staff?', input_type:'short-text', options:null, order_index:22 },
-  // Block D — Market & Growth
-  { block:'D', question_text:'Have you conducted any formal market research or competitor analysis in the past year?', input_type:'yes-no', options:null, order_index:23 },
-  { block:'D', question_text:'Do you have a documented marketing or business development strategy?', input_type:'yes-no', options:null, order_index:24 },
-  { block:'D', question_text:'Do you know your customer acquisition cost (how much it costs to get one new customer)?', input_type:'yes-no', options:null, order_index:25 },
-  { block:'D', question_text:'Do you track your customer retention or repeat purchase rate?', input_type:'yes-no', options:null, order_index:26 },
-  { block:'D', question_text:'Do you have any formal strategic partnerships, B2B contracts, or distribution agreements?', input_type:'yes-no', options:null, order_index:27 },
-  { block:'D', question_text:'Have you explored or entered any new markets or product lines in the past 12 months?', input_type:'yes-no', options:null, order_index:28 },
-  { block:'D', question_text:'What is the biggest challenge currently limiting your business growth?', input_type:'short-text', options:null, order_index:29 },
-  // Block E — Compliance & Risk
-  { block:'E', question_text:'Are you current with all tax filings — income tax, VAT, and any applicable state levies?', input_type:'yes-no', options:null, order_index:30 },
-  { block:'E', question_text:'Do you have any active business insurance (fire, liability, goods in transit, etc.)?', input_type:'yes-no', options:null, order_index:31 },
-  { block:'E', question_text:'Are there any pending legal disputes, court cases, or regulatory issues?', input_type:'yes-no', options:null, order_index:32 },
-  { block:'E', question_text:'Do you conduct risk assessments for your business operations?', input_type:'yes-no', options:null, order_index:33 },
-  { block:'E', question_text:'Do you have a data protection or customer privacy policy?', input_type:'yes-no', options:null, order_index:34 },
-  { block:'E', question_text:'Is your business fully compliant with all applicable sector regulations?', input_type:'yes-no', options:null, order_index:35 },
-  // Block F — Strategic Direction
-  { block:'F', question_text:'Do you have a written business plan (even a simple one)?', input_type:'yes-no', options:null, order_index:36 },
-  { block:'F', question_text:'Have you set specific revenue or growth targets for the next 12 months?', input_type:'yes-no', options:null, order_index:37 },
-  { block:'F', question_text:'Does your business have a clearly defined mission and vision statement?', input_type:'yes-no', options:null, order_index:38 },
-  { block:'F', question_text:'Are your employees or key staff aware of the company goals for this year?', input_type:'yes-no', options:null, order_index:39 },
-  { block:'F', question_text:'Do you review your overall business strategy at least once a year?', input_type:'yes-no', options:null, order_index:40 },
-  { block:'F', question_text:'What is your primary goal for the business in the next 12 months?', input_type:'short-text', options:null, order_index:41 },
-  { block:'F', question_text:'Do you have an exit strategy or long-term transition plan for the business?', input_type:'yes-no', options:null, order_index:42 },
+  // Block A — First Impression (document this within the first 5 minutes of arrival, before you speak to anyone)
+  { block:'A', question_text:'Could you identify this as a business immediately from the outside — signage, branding, or any visual cue — without being told?', input_type:'yes-no', options:null, order_index:1 },
+  { block:'A', question_text:'Was the entrance or first visible area clean, uncluttered, and presented in a way that signals a functioning business?', input_type:'yes-no', options:null, order_index:2 },
+  { block:'A', question_text:'Was there a price list, service menu, or rate card displayed where a customer could read it without asking?', input_type:'yes-no', options:null, order_index:3 },
+  { block:'A', question_text:'Did the layout of the space make sense for how the business operates — could you tell where things happen without being shown?', input_type:'yes-no', options:null, order_index:4 },
+  { block:'A', question_text:'Was stock, equipment, or materials stored in a way that suggested a system — or was it wherever it happened to land?', input_type:'yes-no', options:null, order_index:5 },
+  { block:'A', question_text:'Describe exactly what you saw in the first 5 minutes. Write what a camera would record — not your interpretation, just what was there:', input_type:'short-text', options:null, order_index:6 },
+
+  // Block B — Customer Experience (observe at least 3 customer interactions before answering this block)
+  { block:'B', question_text:'Were customers acknowledged within 30 seconds of arriving or making contact — without the customer having to initiate?', input_type:'yes-no', options:null, order_index:7 },
+  { block:'B', question_text:'Did staff handle customers from start to finish without needing to consult the owner or get approval for anything?', input_type:'yes-no', options:null, order_index:8 },
+  { block:'B', question_text:'When a customer asked about pricing, availability, or process — did staff answer confidently and correctly without guessing or going to check?', input_type:'yes-no', options:null, order_index:9 },
+  { block:'B', question_text:'Did the business follow the same steps for every customer — or did each interaction look different depending on who was serving?', input_type:'yes-no', options:null, order_index:10 },
+  { block:'B', question_text:'Was a receipt, invoice, or written confirmation of the transaction given to the customer — without them asking for it?', input_type:'yes-no', options:null, order_index:11 },
+  { block:'B', question_text:'Describe one complete customer interaction from start to finish — exactly what happened, word for word if possible:', input_type:'short-text', options:null, order_index:12 },
+  { block:'B', question_text:'Was there any moment a customer looked confused, waited too long, or had to repeat themselves? Describe it:', input_type:'short-text', options:null, order_index:13 },
+
+  // Block C — Money and Transaction Handling (watch every transaction — do not skip any)
+  { block:'C', question_text:'Was every sale recorded immediately at the point of exchange — before the customer left?', input_type:'yes-no', options:null, order_index:14 },
+  { block:'C', question_text:'Was a POS machine, receipt printer, or digital invoicing tool actively used — not just sitting on the counter unused?', input_type:'yes-no', options:null, order_index:15 },
+  { block:'C', question_text:'Did any transaction happen verbally or with cash exchanged — with no receipt, no record, and no system entry?', input_type:'yes-no', options:null, order_index:16 },
+  { block:'C', question_text:'Was cash kept in a till, drawer, or designated place — separate from anyone\'s pocket or personal wallet?', input_type:'yes-no', options:null, order_index:17 },
+  { block:'C', question_text:'Describe exactly how the most common type of transaction was handled — step by step, what you physically saw:', input_type:'short-text', options:null, order_index:18 },
+  { block:'C', question_text:'If you spotted any transaction that looked informal, unrecorded, or handled differently from others — describe it here:', input_type:'short-text', options:null, order_index:19 },
+
+  // Block D — Staff Behaviour (watch the team, not the owner — note what staff do when the owner is not looking)
+  { block:'D', question_text:'Did staff know what to do next without being told — did work flow without direction?', input_type:'yes-no', options:null, order_index:20 },
+  { block:'D', question_text:'Were staff actively doing something productive at all times — or did they stop and wait when there was no obvious task?', input_type:'yes-no', options:null, order_index:21 },
+  { block:'D', question_text:'Was there one staff member (not the owner) who others naturally looked to for direction — a de facto supervisor or lead?', input_type:'yes-no', options:null, order_index:22 },
+  { block:'D', question_text:'Did any staff member refer to a written guide, printed checklist, or documented process at any point during the visit?', input_type:'yes-no', options:null, order_index:23 },
+  { block:'D', question_text:'Were staff dressed consistently — uniform, branded clothing, or an obvious shared dress standard — or was everyone in whatever they chose?', input_type:'yes-no', options:null, order_index:24 },
+  { block:'D', question_text:'Describe a specific moment that showed whether the team functions as a unit or as individuals doing separate things:', input_type:'short-text', options:null, order_index:25 },
+
+  // Block E — Owner Dependency (this is one of the most important blocks — watch specifically what the owner does, not what they say)
+  { block:'E', question_text:'Did staff ask the owner to approve, decide, or be involved in anything that a trained staff member should handle independently?', input_type:'yes-no', options:null, order_index:26 },
+  { block:'E', question_text:'When the owner was occupied or stepped away — did operations continue smoothly, or did things pause until they returned?', input_type:'yes-no', options:null, order_index:27 },
+  { block:'E', question_text:'Was the owner doing tasks — serving customers, handling money, packing, answering calls — rather than managing or overseeing?', input_type:'yes-no', options:null, order_index:28 },
+  { block:'E', question_text:'Was there a single moment where the business clearly could not proceed without the owner\'s direct involvement? Describe it:', input_type:'short-text', options:null, order_index:29 },
+  { block:'E', question_text:'Based on everything you observed: if the owner did not come in tomorrow, how would the business operate?', input_type:'dropdown', options:['It would stop completely','It would struggle badly and likely lose customers','It would manage basic tasks but miss important things','It would run mostly fine for a day or two','It would run exactly as normal'], order_index:30 },
+
+  // Block F — Systems and Documentation (ask to see these directly — do not accept "yes we have it" without seeing it)
+  { block:'F', question_text:'Ask to see the sales record or transaction log for today. Was it available, up to date, and maintained by staff (not the owner)?', input_type:'yes-no', options:null, order_index:31 },
+  { block:'F', question_text:'Ask to see the staff schedule or duty roster for this week. Did it exist in written or digital form?', input_type:'yes-no', options:null, order_index:32 },
+  { block:'F', question_text:'Ask to see how they document a core task — e.g. how an order is processed, how stock is counted. Was any written process shown to you?', input_type:'yes-no', options:null, order_index:33 },
+  { block:'F', question_text:'Was any software, app, or digital tool actively open and in use during the visit — not just mentioned as something they have?', input_type:'yes-no', options:null, order_index:34 },
+  { block:'F', question_text:'What was the single biggest gap you personally witnessed that the owner is unlikely to have mentioned or noticed themselves?', input_type:'short-text', options:null, order_index:35 },
+  { block:'F', question_text:'What did the business do well — something that would not have been obvious without being there in person?', input_type:'short-text', options:null, order_index:36 },
 ]
 
 export async function OPTIONS() {
