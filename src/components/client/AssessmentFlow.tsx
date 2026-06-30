@@ -63,8 +63,12 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
 
   async function submitTeamInterview() {
     setLoading(true)
-    const { error } = await supabase.from('layer2_responses').upsert({ business_id: businessId, answers: interviewAnswers })
-    if (!error) {
+    const res = await fetch('/api/client/submit-interview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ answers: interviewAnswers }),
+    })
+    if (res.ok) {
       setStep('report')
       router.refresh()
     }
