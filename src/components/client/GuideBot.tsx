@@ -1,9 +1,10 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import type { GuideSession, ChatMessage } from '@/types'
-import { Send, Mic, Square, MicOff } from 'lucide-react'
+import { Send, Mic, Square } from 'lucide-react'
 
 interface Props {
   lastSession: GuideSession | null
@@ -11,6 +12,8 @@ interface Props {
 }
 
 export function GuideBot({ lastSession, businessId }: Props) {
+  const searchParams = useSearchParams()
+  const isNew = searchParams.get('new') === '1'
   const [messages, setMessages] = useState<ChatMessage[]>(lastSession?.messages ?? [])
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
@@ -28,7 +31,11 @@ export function GuideBot({ lastSession, businessId }: Props) {
   // Opening message when no history
   useEffect(() => {
     if (messages.length === 0) {
-      sendMessage("Start the session. Open with the specific first task based on my report findings.")
+      if (isNew) {
+        sendMessage("__new_process__")
+      } else {
+        sendMessage("__session_start__")
+      }
     }
   }, [])
 
@@ -103,7 +110,7 @@ export function GuideBot({ lastSession, businessId }: Props) {
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto space-y-4 pb-4">
-        {messages.map((m, i) => (
+        {messages.filter(m => m.content !== '__session_start__' && m.content !== '__new_process__').map((m, i) => (
           <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div
               className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${

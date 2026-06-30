@@ -55,9 +55,15 @@ export function WorkspaceView({ documents, business, businessId }: Props) {
           <h1 className="text-xl font-bold text-[#0D1B3E]">Workspace</h1>
           <p className="text-sm text-[#666] mt-0.5">{business?.name}</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center flex-wrap">
           <Badge variant="navy">{totalDocs} documents</Badge>
           {overdueCount > 0 && <Badge variant="red">{overdueCount} overdue</Badge>}
+          <button
+            onClick={() => router.push('/app/guide?new=1')}
+            className="ml-auto text-xs font-semibold text-[#C9952B] border border-[#C9952B]/30 rounded-lg px-3 py-1.5 hover:bg-[#C9952B]/5 transition-colors"
+          >
+            + Document a process
+          </button>
         </div>
       </div>
 
