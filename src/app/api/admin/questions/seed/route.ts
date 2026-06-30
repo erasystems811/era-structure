@@ -47,53 +47,53 @@ const LAYER1: { block: string; question_text: string; input_type: string; option
 ]
 
 const LAYER2: { block: string; question_text: string; input_type: string; options: string[] | null; order_index: number }[] = [
-  // Block A — First Impression (document this within the first 5 minutes of arrival, before you speak to anyone)
-  { block:'A', question_text:'Could you identify this as a business immediately from the outside — signage, branding, or any visual cue — without being told?', input_type:'yes-no', options:null, order_index:1 },
-  { block:'A', question_text:'Was the entrance or first visible area clean, uncluttered, and presented in a way that signals a functioning business?', input_type:'yes-no', options:null, order_index:2 },
-  { block:'A', question_text:'Was there a price list, service menu, or rate card displayed where a customer could read it without asking?', input_type:'yes-no', options:null, order_index:3 },
-  { block:'A', question_text:'Did the layout of the space make sense for how the business operates — could you tell where things happen without being shown?', input_type:'yes-no', options:null, order_index:4 },
-  { block:'A', question_text:'Was stock, equipment, or materials stored in a way that suggested a system — or was it wherever it happened to land?', input_type:'yes-no', options:null, order_index:5 },
-  { block:'A', question_text:'Describe exactly what you saw in the first 5 minutes. Write what a camera would record — not your interpretation, just what was there:', input_type:'short-text', options:null, order_index:6 },
+  // Block A — The Owner's Real Day (interview the owner — ask them to be specific, not general)
+  { block:'A', question_text:'List every task you personally do from the moment you start work to the moment you stop — include everything, even the small things you do automatically without thinking:', input_type:'short-text', options:null, order_index:1 },
+  { block:'A', question_text:'Of everything on that list, which 3 tasks consume the most of your time each day?', input_type:'short-text', options:null, order_index:2 },
+  { block:'A', question_text:'Which tasks on that list could only you do — not because no one is trained, but because there is no documented way for anyone else to do them?', input_type:'short-text', options:null, order_index:3 },
+  { block:'A', question_text:'Which tasks would you hand off today if someone reliable could take them?', input_type:'short-text', options:null, order_index:4 },
+  { block:'A', question_text:'Describe your typical Monday from start to finish — what happens, in what order, from the time you begin to the time you stop:', input_type:'short-text', options:null, order_index:5 },
+  { block:'A', question_text:'On a day when you cannot come in, which tasks simply do not get done — not because no one wants to do them, but because no one knows how?', input_type:'short-text', options:null, order_index:6 },
 
-  // Block B — Customer Experience (observe at least 3 customer interactions before answering this block)
-  { block:'B', question_text:'Were customers acknowledged within 30 seconds of arriving or making contact — without the customer having to initiate?', input_type:'yes-no', options:null, order_index:7 },
-  { block:'B', question_text:'Did staff handle customers from start to finish without needing to consult the owner or get approval for anything?', input_type:'yes-no', options:null, order_index:8 },
-  { block:'B', question_text:'When a customer asked about pricing, availability, or process — did staff answer confidently and correctly without guessing or going to check?', input_type:'yes-no', options:null, order_index:9 },
-  { block:'B', question_text:'Did the business follow the same steps for every customer — or did each interaction look different depending on who was serving?', input_type:'yes-no', options:null, order_index:10 },
-  { block:'B', question_text:'Was a receipt, invoice, or written confirmation of the transaction given to the customer — without them asking for it?', input_type:'yes-no', options:null, order_index:11 },
-  { block:'B', question_text:'Describe one complete customer interaction from start to finish — exactly what happened, word for word if possible:', input_type:'short-text', options:null, order_index:12 },
-  { block:'B', question_text:'Was there any moment a customer looked confused, waited too long, or had to repeat themselves? Describe it:', input_type:'short-text', options:null, order_index:13 },
+  // Block B — Staff Task Mapping (interview each key staff member one at a time, separately from the owner — write their exact words)
+  { block:'B', question_text:'List the names and roles of all key staff members you will interview in this block:', input_type:'short-text', options:null, order_index:7 },
+  { block:'B', question_text:'First staff member — ask them: "Walk me through everything you do in a typical day from when you arrive to when you leave." Write exactly what they say:', input_type:'short-text', options:null, order_index:8 },
+  { block:'B', question_text:'Second staff member — same question: "Walk me through everything you do in a typical day." Write exactly what they say:', input_type:'short-text', options:null, order_index:9 },
+  { block:'B', question_text:'Third staff member (if applicable) — same question. Write exactly what they say:', input_type:'short-text', options:null, order_index:10 },
+  { block:'B', question_text:'After interviewing all staff, list any tasks that more than one person said they do — tasks with no clear single owner:', input_type:'short-text', options:null, order_index:11 },
+  { block:'B', question_text:'List any tasks the owner said they do that staff members also said they do — overlaps where it is not clear who is responsible:', input_type:'short-text', options:null, order_index:12 },
 
-  // Block C — Money and Transaction Handling (watch every transaction — do not skip any)
-  { block:'C', question_text:'Was every sale recorded immediately at the point of exchange — before the customer left?', input_type:'yes-no', options:null, order_index:14 },
-  { block:'C', question_text:'Was a POS machine, receipt printer, or digital invoicing tool actively used — not just sitting on the counter unused?', input_type:'yes-no', options:null, order_index:15 },
-  { block:'C', question_text:'Did any transaction happen verbally or with cash exchanged — with no receipt, no record, and no system entry?', input_type:'yes-no', options:null, order_index:16 },
-  { block:'C', question_text:'Was cash kept in a till, drawer, or designated place — separate from anyone\'s pocket or personal wallet?', input_type:'yes-no', options:null, order_index:17 },
-  { block:'C', question_text:'Describe exactly how the most common type of transaction was handled — step by step, what you physically saw:', input_type:'short-text', options:null, order_index:18 },
-  { block:'C', question_text:'If you spotted any transaction that looked informal, unrecorded, or handled differently from others — describe it here:', input_type:'short-text', options:null, order_index:19 },
+  // Block C — Stress and Pressure Points (ask each person separately — their honest answers reveal where structure is missing)
+  { block:'C', question_text:'Ask each staff member: "What is the most stressful part of your job?" Write their name and their exact answer for each person:', input_type:'short-text', options:null, order_index:13 },
+  { block:'C', question_text:'Ask each staff member: "What part of your day do you dread the most?" Write their name and their exact answer:', input_type:'short-text', options:null, order_index:14 },
+  { block:'C', question_text:'Ask the owner: "What part of running this business causes you the most stress or keeps you up at night?" Write their exact words:', input_type:'short-text', options:null, order_index:15 },
+  { block:'C', question_text:'Ask each staff member: "Is there anything you are expected to do regularly that you were never properly trained or shown how to do?" Write their answers:', input_type:'short-text', options:null, order_index:16 },
+  { block:'C', question_text:'Ask the owner: "Is there a task you do every day that you never intended to be your responsibility long-term — something you just ended up doing?" Write their answer:', input_type:'short-text', options:null, order_index:17 },
+  { block:'C', question_text:'Based on all the answers in this block — which task or situation came up most as a source of stress, and what does that tell you about the business?', input_type:'short-text', options:null, order_index:18 },
 
-  // Block D — Staff Behaviour (watch the team, not the owner — note what staff do when the owner is not looking)
-  { block:'D', question_text:'Did staff know what to do next without being told — did work flow without direction?', input_type:'yes-no', options:null, order_index:20 },
-  { block:'D', question_text:'Were staff actively doing something productive at all times — or did they stop and wait when there was no obvious task?', input_type:'yes-no', options:null, order_index:21 },
-  { block:'D', question_text:'Was there one staff member (not the owner) who others naturally looked to for direction — a de facto supervisor or lead?', input_type:'yes-no', options:null, order_index:22 },
-  { block:'D', question_text:'Did any staff member refer to a written guide, printed checklist, or documented process at any point during the visit?', input_type:'yes-no', options:null, order_index:23 },
-  { block:'D', question_text:'Were staff dressed consistently — uniform, branded clothing, or an obvious shared dress standard — or was everyone in whatever they chose?', input_type:'yes-no', options:null, order_index:24 },
-  { block:'D', question_text:'Describe a specific moment that showed whether the team functions as a unit or as individuals doing separate things:', input_type:'short-text', options:null, order_index:25 },
+  // Block D — What Would Break If Someone Was Absent (this block reveals which roles have no backup and which processes live only in someone's head)
+  { block:'D', question_text:'Ask each staff member: "If you did not come in tomorrow, what would not get done — and would anyone else even know it needed doing?" Write their name and their answer:', input_type:'short-text', options:null, order_index:19 },
+  { block:'D', question_text:'Ask the owner: "If you could not come in for one full week, what would genuinely break down in this business?" Write their exact words:', input_type:'short-text', options:null, order_index:20 },
+  { block:'D', question_text:'Are there any tasks that only one person knows how to do — where if that person left or was sick, the knowledge would leave with them? List them and who holds them:', input_type:'short-text', options:null, order_index:21 },
+  { block:'D', question_text:'Ask the owner: "Has a staff member ever left or been absent and caused a problem that surprised you — something you did not realise they were the only one handling?" Describe what happened:', input_type:'short-text', options:null, order_index:22 },
+  { block:'D', question_text:'List the parts of this business that currently depend entirely on one specific person being present or available:', input_type:'short-text', options:null, order_index:23 },
+  { block:'D', question_text:'If the owner and one key staff member were both unavailable for a full day — what would happen to the business?', input_type:'dropdown', options:['It would stop completely','It would struggle badly and lose customers','It would manage basics but miss important things','It would run mostly fine','It would run exactly as normal'], order_index:24 },
 
-  // Block E — Owner Dependency (this is one of the most important blocks — watch specifically what the owner does, not what they say)
-  { block:'E', question_text:'Did staff ask the owner to approve, decide, or be involved in anything that a trained staff member should handle independently?', input_type:'yes-no', options:null, order_index:26 },
-  { block:'E', question_text:'When the owner was occupied or stepped away — did operations continue smoothly, or did things pause until they returned?', input_type:'yes-no', options:null, order_index:27 },
-  { block:'E', question_text:'Was the owner doing tasks — serving customers, handling money, packing, answering calls — rather than managing or overseeing?', input_type:'yes-no', options:null, order_index:28 },
-  { block:'E', question_text:'Was there a single moment where the business clearly could not proceed without the owner\'s direct involvement? Describe it:', input_type:'short-text', options:null, order_index:29 },
-  { block:'E', question_text:'Based on everything you observed: if the owner did not come in tomorrow, how would the business operate?', input_type:'dropdown', options:['It would stop completely','It would struggle badly and likely lose customers','It would manage basic tasks but miss important things','It would run mostly fine for a day or two','It would run exactly as normal'], order_index:30 },
+  // Block E — Who Decides What (this block maps the real decision-making structure — not the official one, the actual one)
+  { block:'E', question_text:'Ask each staff member: "When something unexpected happens at work — something outside your normal day — what do you do? Handle it yourself, ask a colleague, or call the owner?" Write their name and answer:', input_type:'short-text', options:null, order_index:25 },
+  { block:'E', question_text:'Ask the owner: "What kinds of things do staff call or message you about that you think they should be able to decide on their own?" Write their answer:', input_type:'short-text', options:null, order_index:26 },
+  { block:'E', question_text:'Ask each staff member: "Is there anything you are not allowed to decide yourself that slows down your work or makes your job harder?" Write their answers:', input_type:'short-text', options:null, order_index:27 },
+  { block:'E', question_text:'Are there unwritten rules about who makes which decisions — things everyone seems to know but that are never written down anywhere? List them:', input_type:'short-text', options:null, order_index:28 },
+  { block:'E', question_text:'Based on your conversations: does this business have a real decision-making structure, or does everything eventually come back to the owner regardless of what it is?', input_type:'dropdown', options:['Everything goes back to the owner','Most things go back to the owner','Staff handle routine things, owner handles anything unusual','Staff make most decisions independently','Staff are fully empowered to decide within their roles'], order_index:29 },
+  { block:'E', question_text:'Describe a specific example from your conversations where a decision was escalated to the owner that a properly trained staff member should have handled:', input_type:'short-text', options:null, order_index:30 },
 
-  // Block F — Systems and Documentation (ask to see these directly — do not accept "yes we have it" without seeing it)
-  { block:'F', question_text:'Ask to see the sales record or transaction log for today. Was it available, up to date, and maintained by staff (not the owner)?', input_type:'yes-no', options:null, order_index:31 },
-  { block:'F', question_text:'Ask to see the staff schedule or duty roster for this week. Did it exist in written or digital form?', input_type:'yes-no', options:null, order_index:32 },
-  { block:'F', question_text:'Ask to see how they document a core task — e.g. how an order is processed, how stock is counted. Was any written process shown to you?', input_type:'yes-no', options:null, order_index:33 },
-  { block:'F', question_text:'Was any software, app, or digital tool actively open and in use during the visit — not just mentioned as something they have?', input_type:'yes-no', options:null, order_index:34 },
-  { block:'F', question_text:'What was the single biggest gap you personally witnessed that the owner is unlikely to have mentioned or noticed themselves?', input_type:'short-text', options:null, order_index:35 },
-  { block:'F', question_text:'What did the business do well — something that would not have been obvious without being there in person?', input_type:'short-text', options:null, order_index:36 },
+  // Block F — Hidden and Undocumented Work (the most revealing block — what happens that nobody officially talks about)
+  { block:'F', question_text:'Ask each staff member: "Is there something you do regularly at work that you were never officially asked to do — something you just started doing because it needed to be done?" Write their name and what they said:', input_type:'short-text', options:null, order_index:31 },
+  { block:'F', question_text:'Ask each staff member: "Is there anything about how this business really runs that you think the owner does not fully know or understand?" Write what they say — use their exact words:', input_type:'short-text', options:null, order_index:32 },
+  { block:'F', question_text:'Ask the owner: "Is there something that happens in this business that you know is not how it should be done — but it works well enough, so you have never fixed it?" Write their answer:', input_type:'short-text', options:null, order_index:33 },
+  { block:'F', question_text:'Were there any tasks being done by the wrong person — a senior person doing junior tasks, or junior staff handling things that are above their level? Describe:', input_type:'short-text', options:null, order_index:34 },
+  { block:'F', question_text:'What is one thing you learned from these conversations that the business owner almost certainly does not know about their own business?', input_type:'short-text', options:null, order_index:35 },
+  { block:'F', question_text:'Write your overall summary: based on everything you heard today, what is the real state of this business — not what they tell people, but what is actually happening on the ground?', input_type:'short-text', options:null, order_index:36 },
 ]
 
 export async function OPTIONS() {
