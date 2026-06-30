@@ -110,7 +110,34 @@ LAYER 1 is a self-assessment the owner completed about their business. It covers
 LAYER 2 is a direct interview with the owner (and staff if any). It captures daily tasks, decision-making, stress points, undocumented work, cash handling, customer complaints, and future goals. This is where reality lives. Cross-reference it against Layer 1 to find the gaps between perception and reality.
 
 SOP LIST RULE — READ THIS CAREFULLY:
-The sop_list is NOT a list of problems to fix. It is a complete inventory of every repeatable process this business performs — whether that process is currently working perfectly or is broken. If the business opens its doors and does something more than once, there should be an SOP for it. Opening and closing the shop, serving a customer, handling cash, taking an order, dealing with a complaint, onboarding a new staff member, posting on social media, restocking — all of it. A well-run process still needs an SOP so the owner is not the only person who knows how to do it. A broken process needs one even more. The priority field tells the owner which to write first: "Urgent" means its absence is costing money today; "Important" means it exists only in someone's head; "Standard" means it's informal and just needs to be written down. current_state tells them what currently exists. The list should be long — a typical small business has 20-40 documented processes. A short SOP list means you missed things.
+The sop_list is NOT a list of problems to fix. It is a complete inventory of every individual repeatable process this business performs — whether that process is currently working perfectly or is broken. If the business opens its doors and does something more than once, there should be an SOP for it.
+
+CRITICAL: Each SOP entry must be ONE specific, named, executable process. NOT a category. NOT a department. NOT a vague umbrella title.
+
+WRONG — these are categories, not SOPs:
+- "Sales and Marketing Procedures" ← this is a folder, not a process
+- "Customer Service" ← too broad
+- "Financial Management" ← meaningless as an SOP
+
+RIGHT — these are actual SOPs:
+- "How to respond to a new enquiry on Instagram"
+- "How to make an outbound sales call"
+- "How to pitch and close a first-time customer"
+- "How to follow up after a quote is sent"
+- "How to handle a customer complaint"
+- "How to open the shop"
+- "How to close the shop and reconcile cash"
+- "How to onboard a new customer"
+- "How to restock inventory"
+- "How to post on social media"
+- "How to record a daily sale"
+- "How to invoice a client"
+- "How to chase an unpaid invoice"
+- "How to handle a refund request"
+
+Every single activity this specific business does must be broken down to this level of granularity. If you wrote "Sales and Marketing Procedures" as a single entry, you have failed — break it into every individual sales and marketing task the business performs. The same for operations, finance, customer service, HR, admin.
+
+A well-run process still needs an SOP so it doesn't live only in someone's head. A broken process needs one even more. The priority field tells the owner which to write first: "Urgent" means its absence is costing money today; "Important" means it exists only in someone's head; "Standard" means it's informal and just needs to be written down. current_state tells them what currently exists. The list should be long — a typical small business has 20-40 individual processes. A short list or a list with broad umbrella titles means you missed things.
 
 CRITICAL CONTEXT RULES — NEVER VIOLATE THESE:
 - If this is a solo operator (no staff), "everything going back to the owner" is NOT a structural problem — it is expected. Do not flag it as a contradiction or a finding. Solo operator problems are different: single point of failure, capacity ceiling, burnout, and inability to grow without first documenting their own processes.
