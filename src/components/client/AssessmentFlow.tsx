@@ -35,6 +35,13 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
     : 'intro'
 
   const [step, setStep] = useState<Step>(currentStep)
+
+  // TEMP DEBUG BAR — will remove
+  const debugBar = (
+    <div style={{ background: '#0D1B3E', color: '#C9952B', padding: '8px 12px', fontSize: 11, borderRadius: 8, marginBottom: 12, fontFamily: 'monospace' }}>
+      step={step} | report={report ? 'YES' : 'NO'} | layer2={layer2 ? 'YES' : 'NO'} | layer1={layer1 ? 'YES' : 'NO'} | bizId={businessId || 'MISSING'}
+    </div>
+  )
   const [answers, setAnswers] = useState<Record<string, unknown>>(layer1?.answers ?? {})
   const [staffList, setStaffList] = useState<{ name: string; role: string }[]>(
     staff.map(s => ({ name: s.name, role: s.role }))
@@ -102,6 +109,7 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
 
     return (
       <div className="space-y-5">
+        {debugBar}
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold text-[#0D1B3E]">Your Business Report</h1>
@@ -389,13 +397,16 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
 
   if (step === 'report' && !report) {
     return (
-      <Card>
-        <CardBody className="text-center py-12">
-          <Clock size={32} className="text-[#C9952B] mx-auto mb-3" />
-          <h2 className="text-base font-semibold text-[#0D1B3E] mb-1">Assessment submitted</h2>
-          <p className="text-sm text-[#666]">Your report is being reviewed. You will receive a WhatsApp message when it is ready.</p>
-        </CardBody>
-      </Card>
+      <div>
+        {debugBar}
+        <Card>
+          <CardBody className="text-center py-12">
+            <Clock size={32} className="text-[#C9952B] mx-auto mb-3" />
+            <h2 className="text-base font-semibold text-[#0D1B3E] mb-1">Assessment submitted</h2>
+            <p className="text-sm text-[#666]">Your report is being reviewed. You will receive a WhatsApp message when it is ready.</p>
+          </CardBody>
+        </Card>
+      </div>
     )
   }
 
@@ -608,7 +619,7 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
     )
   }
 
-  return null
+  return <div>{debugBar}<p style={{color:'red',fontWeight:'bold'}}>STEP NOT MATCHED: {step}</p></div>
 }
 
 interface IQ { id: string; text: string; type: 'short-text' | 'number' | 'dropdown'; options?: string[] }
