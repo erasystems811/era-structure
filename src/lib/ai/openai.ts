@@ -248,6 +248,7 @@ Return this exact JSON structure:
   ],
 
   "priority_actions": {
+    "note": "Each tier can have as many actions as the business genuinely needs — there is no limit. A complex business with many structural problems may have 6-8 immediate actions. A simpler one may have 2. Do not cap the list artificially. Every action must be specific and necessary. Do not pad with generic actions. Immediate = must happen in the first 2 weeks or money keeps leaking. Short term = within 2 months. Medium term = 3-6 months.",
     "immediate": [
       {
         "action": "Specific verb-led instruction. What exactly to do.",
