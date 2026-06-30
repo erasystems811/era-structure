@@ -20,7 +20,7 @@ interface Props {
   businessId: string
 }
 
-type Step = 'intro' | 'layer1' | 'observation-schedule' | 'observation-form' | 'report'
+type Step = 'intro' | 'layer1' | 'team-interview' | 'report'
 
 export function AssessmentFlow({ business, layer1, observation, layer2, report, questions, staff, businessId }: Props) {
   const supabase = createClient()
@@ -30,10 +30,8 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
     ? 'report'
     : layer2
     ? 'report'
-    : observation
-    ? 'observation-form'
     : layer1
-    ? 'observation-schedule'
+    ? 'team-interview'
     : 'intro'
 
   const [step, setStep] = useState<Step>(currentStep)
@@ -41,13 +39,8 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
   const [staffList, setStaffList] = useState<{ name: string; role: string }[]>(
     staff.map(s => ({ name: s.name, role: s.role }))
   )
-  const [obsNotes, setObsNotes] = useState('')
-  const [obsDay1, setObsDay1] = useState('')
-  const [obsDay2, setObsDay2] = useState('')
-  const [obsAnswers, setObsAnswers] = useState<Record<string, unknown>>(layer2?.answers ?? {})
+  const [interviewAnswers, setInterviewAnswers] = useState<Record<string, unknown>>(layer2?.answers ?? {})
   const [loading, setLoading] = useState(false)
-
-  const obsQuestions = (observation?.generated_questions as Question[] | null) ?? []
 
   async function submitLayer1() {
     setLoading(true)
@@ -57,35 +50,20 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
     })
 
     if (!error) {
-      // Save staff members
       for (const s of staffList) {
         if (s.name && s.role) {
           await supabase.from('staff_members').upsert({ business_id: businessId, name: s.name, role: s.role }, { onConflict: 'business_id,name' })
         }
       }
-      setStep('observation-schedule')
+      setStep('team-interview')
     }
     setLoading(false)
     router.refresh()
   }
 
-  async function submitObsSchedule() {
+  async function submitTeamInterview() {
     setLoading(true)
-    const res = await fetch('/api/ai/generate-layer2', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ business_id: businessId, day1_date: obsDay1, day2_date: obsDay2, notes: obsNotes }),
-    })
-    if (res.ok) {
-      setStep('observation-form')
-      router.refresh()
-    }
-    setLoading(false)
-  }
-
-  async function submitLayer2() {
-    setLoading(true)
-    const { error } = await supabase.from('layer2_responses').upsert({ business_id: businessId, answers: obsAnswers })
+    const { error } = await supabase.from('layer2_responses').upsert({ business_id: businessId, answers: interviewAnswers })
     if (!error) {
       setStep('report')
       router.refresh()
@@ -183,8 +161,7 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
   // Progress steps
   const steps = [
     { label: 'Business Assessment', done: !!layer1 },
-    { label: 'Observation Schedule', done: !!observation },
-    { label: 'Observation Day', done: !!layer2 },
+    { label: 'Team Interview', done: !!layer2 },
     { label: 'Your Report', done: !!report },
   ]
 
@@ -209,7 +186,7 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
         <Card>
           <CardBody className="py-6">
             <p className="text-sm text-[#1A1A2E] leading-relaxed">
-              This assessment has two stages. First, you answer specific questions about your business — how it runs, who does what, how money moves. Then you schedule an observation day where we capture what is actually happening while the business is running.
+              This assessment has two stages. First, you answer specific questions about your business — how it runs, who does what, how money moves. Then you and each of your staff members answer a short team interview so we understand exactly how the business really operates day to day.
             </p>
             <p className="text-sm text-[#1A1A2E] leading-relaxed mt-3">
               At the end you receive a full diagnostic report — including every structural gap, every revenue leak calculated in naira, and the exact sequence in which to fix them.
@@ -302,89 +279,139 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
     )
   }
 
-  if (step === 'observation-schedule') {
-    return (
-      <div className="space-y-5">
-        <h1 className="text-xl font-bold text-[#0D1B3E]">Observation Day</h1>
-        <Card>
-          <CardBody className="space-y-4">
-            <p className="text-sm text-[#1A1A2E] leading-relaxed">
-              The next step is your Business Observation Day. This is not another questionnaire — it is a real-time snapshot of your business while it is running. You will receive specific questions throughout the day built from what you told us in your assessment. Answer them from exactly what you are seeing around you — not from memory.
-            </p>
-            <p className="text-sm text-[#1A1A2E] leading-relaxed">
-              You need 2 consecutive working days. The more accurate your answers, the more accurate your diagnosis will be.
-            </p>
-
-            <div>
-              <label className="text-sm font-medium text-[#1A1A2E] block mb-1.5">Is there anything happening on those days that could affect how the business runs?</label>
-              <input
-                placeholder="E.g. key staff absent, unusually quiet day..."
-                className="w-full rounded-lg border border-[#0D1B3E]/15 bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#C9952B]"
-                value={obsNotes}
-                onChange={e => setObsNotes(e.target.value)}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-sm font-medium text-[#1A1A2E] block mb-1.5">Day 1</label>
-                <input type="date" className="w-full rounded-lg border border-[#0D1B3E]/15 bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#C9952B]" value={obsDay1} onChange={e => setObsDay1(e.target.value)} />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-[#1A1A2E] block mb-1.5">Day 2</label>
-                <input type="date" className="w-full rounded-lg border border-[#0D1B3E]/15 bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#C9952B]" value={obsDay2} onChange={e => setObsDay2(e.target.value)} />
-              </div>
-            </div>
-
-            <div className="flex gap-3">
-              <button onClick={() => setStep('layer1')} className="flex items-center gap-1 text-sm text-[#666] hover:text-[#0D1B3E] transition">
-                <ChevronLeft size={16} /> Edit answers
-              </button>
-              <Button onClick={submitObsSchedule} loading={loading} disabled={!obsDay1 || !obsDay2} className="flex-1">
-                Confirm observation days
-              </Button>
-            </div>
-          </CardBody>
-        </Card>
-      </div>
-    )
-  }
-
-  if (step === 'observation-form') {
+  if (step === 'team-interview') {
+    const interviewSections = buildInterviewSections(staffList)
     return (
       <div className="space-y-5">
         <div>
-          <h1 className="text-xl font-bold text-[#0D1B3E]">Observation Day</h1>
-          <p className="text-sm text-[#666] mt-0.5">Answer from what is happening around you right now</p>
+          <h1 className="text-xl font-bold text-[#0D1B3E]">Team Interview</h1>
+          <p className="text-sm text-[#666] mt-0.5">Sit with each person separately and record their answers honestly</p>
         </div>
 
-        {obsQuestions.length === 0 ? (
-          <Card><CardBody className="text-center py-8 text-sm text-[#666]">Questions are being prepared. Check back shortly.</CardBody></Card>
-        ) : (
-          <Card>
-            <CardBody className="space-y-5">
-              {obsQuestions.map((q: Question, i: number) => (
-                <QuestionField key={i} question={q} value={obsAnswers[String(i)]} onChange={v => setObsAnswers(a => ({ ...a, [String(i)]: v }))} />
+        {/* Owner section */}
+        <Card>
+          <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
+            <h2 className="text-sm font-semibold text-[#0D1B3E]">Owner — Your Daily Reality</h2>
+          </div>
+          <CardBody className="space-y-4">
+            {interviewSections.owner.map(q => (
+              <InterviewField key={q.id} q={q} value={interviewAnswers[q.id]} onChange={v => setInterviewAnswers(a => ({ ...a, [q.id]: v }))} />
+            ))}
+          </CardBody>
+        </Card>
+
+        {/* Per-staff sections */}
+        {staffList.filter(s => s.name).map((s, i) => (
+          <Card key={i}>
+            <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
+              <h2 className="text-sm font-semibold text-[#0D1B3E]">{s.name} — {s.role}</h2>
+              <p className="text-xs text-[#999] mt-0.5">Ask them these questions directly. Write exactly what they say.</p>
+            </div>
+            <CardBody className="space-y-4">
+              {interviewSections.staff(s.name, s.role, i).map(q => (
+                <InterviewField key={q.id} q={q} value={interviewAnswers[q.id]} onChange={v => setInterviewAnswers(a => ({ ...a, [q.id]: v }))} />
               ))}
             </CardBody>
           </Card>
-        )}
+        ))}
 
-        {obsQuestions.length > 0 && (
-          <div className="flex gap-3">
-            <button onClick={() => setStep('observation-schedule')} className="flex items-center gap-1 text-sm text-[#666] hover:text-[#0D1B3E] transition">
-              <ChevronLeft size={16} /> Back
-            </button>
-            <Button onClick={submitLayer2} loading={loading} size="lg" className="flex-1">
-              Submit observation
-            </Button>
+        {/* Summary section */}
+        <Card>
+          <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
+            <h2 className="text-sm font-semibold text-[#0D1B3E]">Overall Summary</h2>
           </div>
-        )}
+          <CardBody className="space-y-4">
+            {interviewSections.summary.map(q => (
+              <InterviewField key={q.id} q={q} value={interviewAnswers[q.id]} onChange={v => setInterviewAnswers(a => ({ ...a, [q.id]: v }))} />
+            ))}
+          </CardBody>
+        </Card>
+
+        <div className="flex gap-3">
+          <button onClick={() => setStep('layer1')} className="flex items-center gap-1 text-sm text-[#666] hover:text-[#0D1B3E] transition">
+            <ChevronLeft size={16} /> Edit assessment
+          </button>
+          <Button onClick={submitTeamInterview} loading={loading} size="lg" className="flex-1">
+            Submit team interview
+          </Button>
+        </div>
       </div>
     )
   }
 
   return null
+}
+
+interface IQ { id: string; text: string; type: 'short-text' | 'number' | 'dropdown'; options?: string[] }
+
+function buildInterviewSections(staffList: { name: string; role: string }[]) {
+  const owner: IQ[] = [
+    { id: 'owner_top_tasks', text: "Your 3 biggest time-consuming tasks every day (e.g. banking, customer calls, stock counting):", type: 'short-text' },
+    { id: 'owner_only_tasks', text: "Tasks ONLY you can do right now — nobody else knows how:", type: 'short-text' },
+    { id: 'owner_handoff', text: "Tasks you'd hand off today if someone was properly trained:", type: 'short-text' },
+    { id: 'owner_hours', text: "How many hours per day do you spend doing tasks yourself (not managing or planning)?", type: 'number' },
+    { id: 'owner_absent_gaps', text: "When you're absent, which tasks do NOT get done because nobody else knows how?", type: 'short-text' },
+    { id: 'owner_stress', text: "What about running this business stresses you most?", type: 'short-text' },
+    { id: 'owner_broken_process', text: "A process in your business that 'works' but you know isn't the right way to do it:", type: 'short-text' },
+    { id: 'owner_not_my_job', text: "One thing you did yesterday that you honestly feel is NOT your job:", type: 'short-text' },
+  ]
+
+  const staff = (name: string, role: string, i: number): IQ[] => {
+    const p = `staff_${i}`
+    return [
+      { id: `${p}_tasks`, text: `Walk me through everything you do in a typical day — what do you do and in what order?`, type: 'short-text' },
+      { id: `${p}_stress`, text: `What is the most stressful part of your job?`, type: 'short-text' },
+      { id: `${p}_untrained`, text: `Is there something you do regularly that you were never properly shown how to do?`, type: 'short-text' },
+      { id: `${p}_absent`, text: `If you didn't come in tomorrow, what would NOT get done — and would anyone else know it needed doing?`, type: 'short-text' },
+      { id: `${p}_decisions`, text: `When something unexpected happens, do you handle it yourself or call the owner?`, type: 'dropdown', options: ['Always call the owner', 'Usually call the owner', 'Depends on the situation', 'Usually handle it myself', 'Always handle it myself'] },
+      { id: `${p}_no_permission`, text: `Is there something you are not allowed to decide yourself that slows down your work?`, type: 'short-text' },
+      { id: `${p}_hidden`, text: `Is there something you do regularly that you were never officially asked to do — you just started doing it because it needed to be done?`, type: 'short-text' },
+      { id: `${p}_owner_doesnt_know`, text: `Is there anything about how this business really runs that you think the owner doesn't fully know or understand?`, type: 'short-text' },
+    ]
+  }
+
+  const summary: IQ[] = [
+    { id: 'knowledge_single_point', text: "Which tasks exist only in ONE person's head — if they left, the knowledge goes with them?", type: 'short-text' },
+    { id: 'owner_week_absent', text: "Owner: if you were away for one full week, what would break first?", type: 'short-text' },
+    { id: 'decision_structure', text: "Overall, how would you describe decision-making in this business?", type: 'dropdown', options: ['Everything goes back to the owner', 'Most things go back to the owner', 'Staff handle routine, owner handles unusual', 'Staff make most decisions independently', 'Staff are fully empowered in their roles'] },
+    { id: 'wrong_person', text: "Is anyone doing tasks clearly above or below their actual role? Name them and describe:", type: 'short-text' },
+    { id: 'surprise', text: "The most honest thing said today that the owner probably did not expect to hear:", type: 'short-text' },
+  ]
+
+  return { owner, staff, summary }
+}
+
+function InterviewField({ q, value, onChange }: { q: IQ; value: unknown; onChange: (v: unknown) => void }) {
+  return (
+    <div>
+      <label className="text-sm font-medium text-[#1A1A2E] block mb-1.5">{q.text}</label>
+      {q.type === 'short-text' && (
+        <input
+          className="w-full rounded-lg border border-[#0D1B3E]/15 bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#C9952B]"
+          value={(value as string) ?? ''}
+          onChange={e => onChange(e.target.value)}
+        />
+      )}
+      {q.type === 'number' && (
+        <input
+          type="number"
+          className="w-32 rounded-lg border border-[#0D1B3E]/15 bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#C9952B]"
+          value={(value as number) ?? ''}
+          onChange={e => onChange(parseFloat(e.target.value))}
+        />
+      )}
+      {q.type === 'dropdown' && q.options && (
+        <select
+          className="w-full rounded-lg border border-[#0D1B3E]/15 bg-white px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#C9952B]"
+          value={(value as string) ?? ''}
+          onChange={e => onChange(e.target.value)}
+        >
+          <option value="">Select</option>
+          {q.options.map(o => <option key={o} value={o}>{o}</option>)}
+        </select>
+      )}
+    </div>
+  )
 }
 
 function QuestionField({ question, value, onChange }: { question: Question; value: unknown; onChange: (v: unknown) => void }) {
