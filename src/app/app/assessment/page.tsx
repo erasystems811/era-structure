@@ -8,18 +8,20 @@ export default async function AssessmentPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase.from('owner_profiles').select('business_id').eq('user_id', user.id).single()
+  const admin = createAdminClient()
+
+  const { data: profile } = await admin.from('owner_profiles').select('business_id').eq('user_id', user.id).maybeSingle()
   const businessId = profile?.business_id
 
-  // Fetch business first to get business_type_id
-  const { data: business } = await supabase
+  if (!businessId) redirect('/login')
+
+  const { data: business } = await admin
     .from('businesses')
     .select('*, business_types(name, id)')
     .eq('id', businessId)
-    .single()
+    .maybeSingle()
 
   const bizTypeId = (business as unknown as { business_type_id: string })?.business_type_id ?? ''
-  const admin = createAdminClient()
 
   const [
     { data: layer1 },

@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { ClientNav } from '@/components/client/ClientNav'
 
@@ -8,19 +8,19 @@ export default async function ClientLayout({ children }: { children: React.React
 
   if (!user) redirect('/login')
 
-  const { data: profile } = await supabase
+  const admin = createAdminClient()
+
+  const { data: profile } = await admin
     .from('owner_profiles')
     .select('role, business_id')
     .eq('user_id', user.id)
-    .single()
+    .maybeSingle()
 
   if (profile?.role === 'admin') redirect('/admin/dashboard')
 
-  const { data: business } = await supabase
-    .from('businesses')
-    .select('*, business_types(name)')
-    .eq('id', profile?.business_id)
-    .single()
+  const { data: business } = profile?.business_id
+    ? await admin.from('businesses').select('*, business_types(name)').eq('id', profile.business_id).maybeSingle()
+    : { data: null }
 
   return (
     <div className="min-h-screen bg-[#F4F2EE]">
