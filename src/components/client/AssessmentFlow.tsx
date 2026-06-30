@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { formatDate, formatNaira } from '@/lib/utils'
 import type { Question, StaffMember, Report, Layer1Response, ObservationSchedule, Layer2Response } from '@/types'
-import { CheckCircle, Circle, Clock, FileText } from 'lucide-react'
+import { CheckCircle, Circle, Clock, ChevronLeft } from 'lucide-react'
 
 interface Props {
   business: { name: string; business_types: { name: string; id: string } | null } | null
@@ -290,9 +290,14 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
           )
         })}
 
-        <Button onClick={submitLayer1} loading={loading} size="lg" className="w-full">
-          Submit assessment
-        </Button>
+        <div className="flex gap-3">
+          <button onClick={() => setStep('intro')} className="flex items-center gap-1 text-sm text-[#666] hover:text-[#0D1B3E] transition">
+            <ChevronLeft size={16} /> Back
+          </button>
+          <Button onClick={submitLayer1} loading={loading} size="lg" className="flex-1">
+            Submit assessment
+          </Button>
+        </div>
       </div>
     )
   }
@@ -331,9 +336,14 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
               </div>
             </div>
 
-            <Button onClick={submitObsSchedule} loading={loading} disabled={!obsDay1 || !obsDay2} className="w-full">
-              Confirm observation days
-            </Button>
+            <div className="flex gap-3">
+              <button onClick={() => setStep('layer1')} className="flex items-center gap-1 text-sm text-[#666] hover:text-[#0D1B3E] transition">
+                <ChevronLeft size={16} /> Edit answers
+              </button>
+              <Button onClick={submitObsSchedule} loading={loading} disabled={!obsDay1 || !obsDay2} className="flex-1">
+                Confirm observation days
+              </Button>
+            </div>
           </CardBody>
         </Card>
       </div>
@@ -361,9 +371,14 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
         )}
 
         {obsQuestions.length > 0 && (
-          <Button onClick={submitLayer2} loading={loading} size="lg" className="w-full">
-            Submit observation
-          </Button>
+          <div className="flex gap-3">
+            <button onClick={() => setStep('observation-schedule')} className="flex items-center gap-1 text-sm text-[#666] hover:text-[#0D1B3E] transition">
+              <ChevronLeft size={16} /> Back
+            </button>
+            <Button onClick={submitLayer2} loading={loading} size="lg" className="flex-1">
+              Submit observation
+            </Button>
+          </div>
         )}
       </div>
     )
