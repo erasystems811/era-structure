@@ -81,10 +81,9 @@ export async function POST(req: Request) {
     .maybeSingle()
   const lastNum = maxRow?.business_number ? parseInt(maxRow.business_number as string) : 0
   const businessNumber = String(lastNum + 1).padStart(4, '0')
-  const internalEmail = `era${businessNumber}@era.internal`
 
   const { data: authData, error: authError } = await db.auth.admin.createUser({
-    email: internalEmail,
+    email: owner_email,
     password,
     email_confirm: true,
   })

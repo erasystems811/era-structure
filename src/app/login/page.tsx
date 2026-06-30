@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 
 export default function LoginPage() {
-  const [businessNumber, setBusinessNumber] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -20,13 +20,10 @@ export default function LoginPage() {
     setError('')
     setLoading(true)
 
-    const padded = businessNumber.trim().padStart(4, '0')
-    const email = `era${padded}@era.internal`
-
     const { error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
-      setError('Invalid business number or password.')
+      setError('Invalid email or password.')
       setLoading(false)
       return
     }
@@ -44,16 +41,16 @@ export default function LoginPage() {
 
         <div className="bg-white rounded-2xl border border-[#0D1B3E]/8 shadow-sm p-8">
           <h1 className="text-lg font-semibold text-[#0D1B3E] mb-1">Sign in</h1>
-          <p className="text-sm text-[#666] mb-6">Enter your business number and password</p>
+          <p className="text-sm text-[#666] mb-6">Access your ERA Structure account</p>
 
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <Input
-              id="business_number"
-              type="text"
-              label="Business Number"
-              placeholder="e.g. 0001"
-              value={businessNumber}
-              onChange={e => setBusinessNumber(e.target.value.replace(/\D/g, ''))}
+              id="email"
+              type="email"
+              label="Email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               required
             />
             <Input
