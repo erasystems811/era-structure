@@ -76,63 +76,125 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
   }
 
   if (step === 'report' && report) {
-    const content = report.generated_content
-    const totalLeak = (content.revenue_leaks ?? []).reduce((sum: number, l: { monthly_naira: number }) => sum + l.monthly_naira, 0)
+    const c = report.generated_content as unknown as Record<string, unknown>
+    const exec = c.executive_summary as { situation?: string; complication?: string; resolution?: string[] } | undefined
+    const snap = c.business_snapshot as { one_line_diagnosis?: string; current_stage?: string; owner_stated_problem?: string } | undefined
+    const findings = (c.key_findings ?? []) as { headline?: string; evidence?: string; root_cause?: string; impact?: string; category?: string }[]
+    const contradictions = (c.contradiction_analysis ?? []) as { owner_stated?: string; reality?: string }[]
+    const leaks = (c.revenue_leakage ?? []) as { title?: string; description?: string; frequency?: string; monthly_min?: number; monthly_max?: number; calculation_note?: string }[]
+    const gaps = (c.structural_gaps ?? []) as { gap?: string; severity?: string; impact?: string }[]
+    const actions = c.priority_actions as { immediate?: unknown[]; short_term?: unknown[]; medium_term?: unknown[] } | undefined
+    const sops = (c.sop_list ?? []) as { title?: string; responsible?: string; priority?: string }[]
+    const vision = (c.vision_90_days ?? []) as string[]
+    const closing = c.closing_assessment as string | undefined
+    const matrix = c.eisenhower_matrix as Record<string, { task?: string; source?: string; note?: string }[]> | undefined
+    const adminNotes = report.admin_notes
+    const totalLeak = leaks.reduce((s, l) => s + (l.monthly_max ?? 0), 0)
+
+    const SEVERITY_COLOR: Record<string, string> = { Critical: 'text-red-600', High: 'text-orange-500', Medium: 'text-yellow-600' }
+    const QUADRANT_CONFIG = [
+      { key: 'q1_do', label: 'Do Now', sub: 'Urgent + Important', color: 'border-red-200 bg-red-50', tag: 'bg-red-100 text-red-700' },
+      { key: 'q2_schedule', label: 'Schedule', sub: 'Important, Not Urgent', color: 'border-teal-200 bg-teal-50', tag: 'bg-teal-100 text-teal-700' },
+      { key: 'q3_delegate', label: 'Delegate / Automate', sub: 'Urgent, Not Important', color: 'border-amber-200 bg-amber-50', tag: 'bg-amber-100 text-amber-700' },
+      { key: 'q4_eliminate', label: 'Eliminate', sub: 'Not Urgent, Not Important', color: 'border-gray-200 bg-gray-50', tag: 'bg-gray-100 text-gray-500' },
+    ]
+
     return (
       <div className="space-y-5">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold text-[#0D1B3E]">Business Assessment Report</h1>
+            <h1 className="text-xl font-bold text-[#0D1B3E]">Your Business Report</h1>
             <p className="text-sm text-[#666] mt-0.5">{business?.name} · {business?.business_types?.name}</p>
           </div>
           <Badge variant="green">Released</Badge>
         </div>
 
-        {totalLeak > 0 && (
-          <Card gold>
-            <CardBody className="text-center py-6">
-              <p className="text-xs text-[#C9952B] uppercase tracking-wide font-medium mb-1">Estimated monthly revenue leakage</p>
-              <p className="text-4xl font-bold text-[#0D1B3E]">{formatNaira(totalLeak)}</p>
-              <p className="text-xs text-[#666] mt-1">Based on your actual data across {content.revenue_leaks?.length ?? 0} identified gaps</p>
+        {/* Admin notes */}
+        {adminNotes && (
+          <Card>
+            <CardBody>
+              <p className="text-xs text-[#C9952B] font-semibold uppercase tracking-wide mb-1">Note from ERA Systems</p>
+              <p className="text-sm text-[#1A1A2E] leading-relaxed">{adminNotes}</p>
             </CardBody>
           </Card>
         )}
 
-        {[
-          { key: 'business_snapshot', title: 'Business Snapshot' },
-          { key: 'contradiction', title: 'What We Found vs What You Said' },
-          { key: 'gap_analysis', title: 'Structural Gap Analysis' },
-          { key: 'delegation_readiness', title: 'Delegation Readiness' },
-          { key: 'priority_sequence', title: 'Priority Fix Sequence' },
-          { key: 'structured_vision', title: 'What Structured Looks Like' },
-        ].map(({ key, title }) => (
-          content[key as keyof typeof content] && (
-            <Card key={key}>
-              <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
-                <h2 className="text-sm font-semibold text-[#0D1B3E]">{title}</h2>
-              </div>
-              <CardBody>
-                <p className="text-sm text-[#1A1A2E] leading-relaxed whitespace-pre-line">{content[key as keyof typeof content] as string}</p>
-              </CardBody>
-            </Card>
-          )
-        ))}
+        {/* One-line diagnosis */}
+        {snap?.one_line_diagnosis && (
+          <div className="rounded-xl bg-[#0D1B3E] px-5 py-4">
+            <p className="text-xs text-[#C9952B] font-semibold uppercase tracking-wider mb-1">Core Finding</p>
+            <p className="text-base font-semibold text-white leading-snug">{snap.one_line_diagnosis}</p>
+          </div>
+        )}
 
-        {(content.revenue_leaks?.length ?? 0) > 0 && (
+        {/* Revenue leakage summary */}
+        {totalLeak > 0 && (
+          <Card gold>
+            <CardBody className="text-center py-5">
+              <p className="text-xs text-[#C9952B] uppercase tracking-wide font-medium mb-1">Estimated monthly revenue leakage</p>
+              <p className="text-4xl font-bold text-[#0D1B3E]">{formatNaira(totalLeak)}</p>
+              <p className="text-xs text-[#666] mt-1">Across {leaks.length} identified gap{leaks.length !== 1 ? 's' : ''}</p>
+            </CardBody>
+          </Card>
+        )}
+
+        {/* Executive Summary */}
+        {exec && (
           <Card>
             <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
-              <h2 className="text-sm font-semibold text-[#0D1B3E]">Revenue Leak Breakdown</h2>
+              <h2 className="text-sm font-semibold text-[#0D1B3E]">Executive Summary</h2>
+            </div>
+            <CardBody className="space-y-3">
+              {exec.situation && <p className="text-sm text-[#666] leading-relaxed">{exec.situation}</p>}
+              {exec.complication && <p className="text-sm text-[#1A1A2E] font-medium leading-relaxed border-l-2 border-red-400 pl-3">{exec.complication}</p>}
+              {exec.resolution && exec.resolution.length > 0 && (
+                <div className="space-y-1.5 pt-1">
+                  {exec.resolution.map((r, i) => (
+                    <div key={i} className="flex gap-2">
+                      <span className="text-[#C9952B] font-bold text-xs mt-0.5 shrink-0">{i + 1}.</span>
+                      <p className="text-sm text-[#1A1A2E]">{r}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardBody>
+          </Card>
+        )}
+
+        {/* Key Findings */}
+        {findings.length > 0 && (
+          <Card>
+            <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
+              <h2 className="text-sm font-semibold text-[#0D1B3E]">Key Findings</h2>
             </div>
             <div className="divide-y divide-[#0D1B3E]/6">
-              {content.revenue_leaks?.map((leak: { title: string; description: string; calculation: string; monthly_naira: number }, i: number) => (
-                <div key={i} className="px-5 py-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-[#0D1B3E]">{leak.title}</p>
-                      <p className="text-sm text-[#666] mt-0.5">{leak.description}</p>
-                      <p className="text-xs text-[#999] mt-1">{leak.calculation}</p>
-                    </div>
-                    <span className="text-sm font-bold text-red-600 whitespace-nowrap">{formatNaira(leak.monthly_naira)}/mo</span>
+              {findings.map((f, i) => (
+                <div key={i} className="px-5 py-4 space-y-1.5">
+                  <p className="text-sm font-semibold text-[#0D1B3E]">{f.headline}</p>
+                  {f.evidence && <p className="text-xs text-[#666] border-l-2 border-[#0D1B3E]/10 pl-2">{f.evidence}</p>}
+                  {f.impact && <p className="text-xs font-medium text-red-600">{f.impact}</p>}
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        {/* Reality vs Perception */}
+        {contradictions.length > 0 && (
+          <Card>
+            <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
+              <h2 className="text-sm font-semibold text-[#0D1B3E]">What We Found vs What You Said</h2>
+            </div>
+            <div className="divide-y divide-[#0D1B3E]/6">
+              {contradictions.map((c, i) => (
+                <div key={i} className="divide-y divide-[#0D1B3E]/4">
+                  <div className="px-5 py-3 bg-[#F4F2EE]">
+                    <p className="text-[10px] text-[#999] font-semibold uppercase mb-0.5">You said</p>
+                    <p className="text-sm text-[#666] italic">"{c.owner_stated}"</p>
+                  </div>
+                  <div className="px-5 py-3">
+                    <p className="text-[10px] text-red-500 font-semibold uppercase mb-0.5">Reality</p>
+                    <p className="text-sm text-[#1A1A2E]">{c.reality}</p>
                   </div>
                 </div>
               ))}
@@ -140,10 +202,173 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
           </Card>
         )}
 
+        {/* Revenue Leakage */}
+        {leaks.length > 0 && (
+          <Card>
+            <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
+              <h2 className="text-sm font-semibold text-[#0D1B3E]">Revenue Leakage</h2>
+            </div>
+            <div className="divide-y divide-[#0D1B3E]/6">
+              {leaks.map((l, i) => (
+                <div key={i} className="px-5 py-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="text-sm font-medium text-[#0D1B3E]">{l.title}</p>
+                    {l.monthly_max && <span className="text-sm font-bold text-red-600 whitespace-nowrap">up to {formatNaira(l.monthly_max)}/mo</span>}
+                  </div>
+                  {l.description && <p className="text-xs text-[#666] mt-1">{l.description}</p>}
+                  {l.calculation_note && <p className="text-xs text-[#999] mt-1">{l.calculation_note}</p>}
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        {/* Structural Gaps */}
+        {gaps.length > 0 && (
+          <Card>
+            <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
+              <h2 className="text-sm font-semibold text-[#0D1B3E]">Structural Gaps</h2>
+            </div>
+            <div className="divide-y divide-[#0D1B3E]/6">
+              {gaps.map((g, i) => (
+                <div key={i} className="px-5 py-3 flex gap-3">
+                  {g.severity && <span className={`text-xs font-bold shrink-0 mt-0.5 ${SEVERITY_COLOR[g.severity] ?? 'text-[#666]'}`}>{g.severity}</span>}
+                  <div>
+                    <p className="text-sm text-[#1A1A2E]">{g.gap}</p>
+                    {g.impact && <p className="text-xs text-[#666] mt-0.5">{g.impact}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        {/* Priority Actions */}
+        {actions && (
+          <Card>
+            <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
+              <h2 className="text-sm font-semibold text-[#0D1B3E]">Priority Actions</h2>
+            </div>
+            <CardBody className="space-y-4">
+              {([
+                { key: 'immediate', label: 'Immediate — Week 1–2', color: 'text-red-600' },
+                { key: 'short_term', label: 'Short Term — Month 1–2', color: 'text-orange-500' },
+                { key: 'medium_term', label: 'Medium Term — Month 3–6', color: 'text-yellow-600' },
+              ] as const).map(tier => {
+                const items = (actions[tier.key] ?? []) as { action?: string; owner?: string; time_estimate?: string; success_looks_like?: string }[]
+                if (!items.length) return null
+                return (
+                  <div key={tier.key}>
+                    <p className={`text-xs font-bold uppercase tracking-wide mb-2 ${tier.color}`}>{tier.label}</p>
+                    <div className="space-y-2">
+                      {items.map((a, i) => (
+                        <div key={i} className="rounded-lg border border-[#0D1B3E]/8 bg-[#F4F2EE] px-3 py-2.5">
+                          <p className="text-sm font-medium text-[#0D1B3E]">{a.action}</p>
+                          <div className="flex gap-3 mt-1 text-xs text-[#999]">
+                            {a.owner && <span>Owner: {a.owner}</span>}
+                            {a.time_estimate && <span>{a.time_estimate}</span>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </CardBody>
+          </Card>
+        )}
+
+        {/* SOPs */}
+        {sops.length > 0 && (
+          <Card>
+            <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
+              <h2 className="text-sm font-semibold text-[#0D1B3E]">Processes to Document</h2>
+            </div>
+            <div className="divide-y divide-[#0D1B3E]/6">
+              {sops.map((s, i) => (
+                <div key={i} className="px-5 py-3 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-[#1A1A2E]">{s.title}</p>
+                    {s.responsible && <p className="text-xs text-[#999]">{s.responsible}</p>}
+                  </div>
+                  {s.priority === 'Urgent' && <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Urgent</span>}
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        {/* 90-Day Vision */}
+        {vision.length > 0 && (
+          <Card>
+            <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
+              <h2 className="text-sm font-semibold text-[#0D1B3E]">What 90 Days Looks Like</h2>
+            </div>
+            <CardBody className="space-y-2">
+              {vision.map((v, i) => (
+                <div key={i} className="flex gap-2">
+                  <span className="text-[#C9952B] shrink-0">✓</span>
+                  <p className="text-sm text-[#1A1A2E]">{v}</p>
+                </div>
+              ))}
+            </CardBody>
+          </Card>
+        )}
+
+        {/* Eisenhower Matrix */}
+        {matrix && (
+          <div>
+            <div className="px-1 mb-3">
+              <h2 className="text-sm font-semibold text-[#0D1B3E]">Priority Matrix — How to Structure Your Time</h2>
+              <p className="text-xs text-[#666] mt-0.5">Based on your assessment. Hover tasks for context.</p>
+            </div>
+            <div className="rounded-xl border border-[#0D1B3E]/10 overflow-hidden">
+              <div className="grid grid-cols-2 divide-x divide-y divide-[#0D1B3E]/8">
+                {QUADRANT_CONFIG.map(q => {
+                  const tasks = (matrix[q.key] ?? []) as { task?: string; source?: string; note?: string }[]
+                  return (
+                    <div key={q.key} className={`p-4 ${q.color} border ${q.color}`}>
+                      <div className="mb-3">
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${q.tag}`}>{q.label}</span>
+                        <p className="text-[10px] text-[#999] mt-1">{q.sub}</p>
+                      </div>
+                      <div className="space-y-2">
+                        {tasks.length === 0 ? (
+                          <p className="text-xs text-[#bbb] italic">None identified</p>
+                        ) : tasks.map((t, i) => (
+                          <div key={i} className="flex gap-1.5">
+                            <span className="text-[#0D1B3E]/30 text-xs mt-0.5 shrink-0">·</span>
+                            <div>
+                              <p className="text-xs text-[#1A1A2E] leading-snug">{t.task}</p>
+                              {t.source === 'suggested' && <p className="text-[9px] text-[#999] uppercase tracking-wide">suggested</p>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Closing */}
+        {closing && (
+          <Card>
+            <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
+              <h2 className="text-sm font-semibold text-[#0D1B3E]">From Your Consultant</h2>
+            </div>
+            <CardBody>
+              <p className="text-sm text-[#1A1A2E] leading-relaxed">{closing}</p>
+            </CardBody>
+          </Card>
+        )}
+
         <Card>
           <CardBody className="text-center py-6">
-            <p className="text-sm text-[#0D1B3E] font-medium mb-3">Ready to fix this?</p>
-            <Button onClick={() => router.push('/app/guide')}>Start with the Guide Bot</Button>
+            <p className="text-sm text-[#0D1B3E] font-medium mb-3">Ready to start fixing this?</p>
+            <Button onClick={() => router.push('/app/guide')}>Go to Guide</Button>
           </CardBody>
         </Card>
       </div>
