@@ -76,7 +76,7 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
   }
 
   if (step === 'report' && report) {
-    const c = report.generated_content as unknown as Record<string, unknown>
+    const c = (report.generated_content ?? {}) as unknown as Record<string, unknown>
     const exec = c.executive_summary as { situation?: string; complication?: string; resolution?: string[] } | undefined
     const snap = c.business_snapshot as { one_line_diagnosis?: string; current_stage?: string; owner_stated_problem?: string } | undefined
     const findings = (c.key_findings ?? []) as { headline?: string; evidence?: string; root_cause?: string; impact?: string; category?: string }[]
@@ -90,6 +90,7 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
     const matrix = c.eisenhower_matrix as Record<string, { task?: string; source?: string; note?: string }[]> | undefined
     const adminNotes = report.admin_notes
     const totalLeak = leaks.reduce((s, l) => s + (l.monthly_max ?? 0), 0)
+    const hasContent = !!(exec || snap?.one_line_diagnosis || findings.length || leaks.length || gaps.length || closing)
 
     const SEVERITY_COLOR: Record<string, string> = { Critical: 'text-red-600', High: 'text-orange-500', Medium: 'text-yellow-600' }
     const QUADRANT_CONFIG = [
@@ -108,6 +109,17 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
           </div>
           <Badge variant="green">Released</Badge>
         </div>
+
+        {/* Report not yet analysed */}
+        {!hasContent && (
+          <Card>
+            <CardBody className="text-center py-10">
+              <Clock size={32} className="text-[#C9952B] mx-auto mb-3" />
+              <h2 className="text-base font-semibold text-[#0D1B3E] mb-1">Report is being prepared</h2>
+              <p className="text-sm text-[#666]">Your ERA consultant is reviewing your submission. You will be notified when your full report is ready.</p>
+            </CardBody>
+          </Card>
+        )}
 
         {/* Admin notes */}
         {adminNotes && (
