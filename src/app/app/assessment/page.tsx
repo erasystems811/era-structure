@@ -23,25 +23,23 @@ export default async function AssessmentPage() {
 
   const [
     { data: layer1 },
-    { data: observation },
     { data: layer2 },
     { data: report },
     { data: questions },
     { data: staff },
   ] = await Promise.all([
-    supabase.from('layer1_responses').select('*').eq('business_id', businessId).maybeSingle(),
-    supabase.from('observation_schedule').select('*').eq('business_id', businessId).maybeSingle(),
-    supabase.from('layer2_responses').select('*').eq('business_id', businessId).maybeSingle(),
-    supabase.from('reports').select('*').eq('business_id', businessId).eq('status', 'released').maybeSingle(),
+    admin.from('layer1_responses').select('*').eq('business_id', businessId).maybeSingle(),
+    admin.from('layer2_responses').select('*').eq('business_id', businessId).maybeSingle(),
+    admin.from('reports').select('*').eq('business_id', businessId).eq('status', 'released').maybeSingle(),
     admin.from('questions').select('*').eq('business_type_id', bizTypeId).eq('layer', 1).eq('is_active', true).order('order_index'),
-    supabase.from('staff_members').select('*').eq('business_id', businessId).eq('is_active', true),
+    admin.from('staff_members').select('*').eq('business_id', businessId).eq('is_active', true),
   ])
 
   return (
     <AssessmentFlow
       business={business as unknown as { name: string; business_types: { name: string; id: string } | null }}
       layer1={layer1}
-      observation={observation}
+      observation={null}
       layer2={layer2}
       report={report}
       questions={questions ?? []}
