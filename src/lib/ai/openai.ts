@@ -233,24 +233,21 @@ Return this exact JSON structure:
       {
         "action": "Specific verb-led instruction. What exactly to do.",
         "owner": "Who does this — by name if a staff member, or 'Business Owner'",
-        "success_looks_like": "How you know this is done.",
-        "time_estimate": "e.g. 2 hours / 1 day"
+        "success_looks_like": "How you know this is done."
       }
     ],
     "short_term": [
       {
         "action": "...",
         "owner": "...",
-        "success_looks_like": "...",
-        "time_estimate": "..."
+        "success_looks_like": "..."
       }
     ],
     "medium_term": [
       {
         "action": "...",
         "owner": "...",
-        "success_looks_like": "...",
-        "time_estimate": "..."
+        "success_looks_like": "..."
       }
     ]
   },
@@ -312,7 +309,77 @@ Return this exact JSON structure:
         "note": "Why this wastes time without meaningful business value"
       }
     ]
-  }
+  },
+
+  "org_structure": {
+    "note": "This section shows the owner what their organisation actually looks like today — and what it should look like. Most small business owners have never seen their business drawn as a structure. They give one person multiple roles without realising it, they hire without a plan, and they don't know what role to hire next. Your job is to draw both pictures clearly using the actual people in this business. The current chart uses the real names and roles from the staff data. The ideal chart shows what the org SHOULD look like for this business type and size — including positions that don't exist yet. Use the hiring sequence to tell them exactly who to bring on first and why.",
+
+    "current": {
+      "people": [
+        {
+          "name": "Owner's actual name — pull from business data",
+          "title": "Business Owner",
+          "actual_roles": ["List every function this person is personally handling — sales, operations, finance, HR, customer service, etc. Be specific."],
+          "overload_note": "One sentence: what this concentration of roles is costing the business."
+        }
+      ],
+      "structural_problems": [
+        "Specific problem 1 — e.g. 'No one person owns operations; every customer issue returns to the owner'",
+        "Specific problem 2 — e.g. 'Two staff members share the title Salesperson but have different responsibilities with no documented boundary'"
+      ]
+    },
+
+    "ideal": {
+      "positions": [
+        {
+          "title": "Business Owner",
+          "focus": "Strategy, key client relationships, and business development only",
+          "reports_to": null,
+          "status": "exists"
+        },
+        {
+          "title": "Example: Operations Manager",
+          "focus": "Day-to-day running — staff, customer fulfilment, quality control",
+          "reports_to": "Business Owner",
+          "status": "needs to be hired | can be assigned internally",
+          "hire_priority": 1
+        }
+      ],
+      "hiring_sequence": [
+        "First hire: [Role name] — because [specific reason based on this business's biggest bottleneck]. This person frees the owner from [specific task]. Hire when monthly revenue consistently exceeds [figure].",
+        "Second hire: [Role name] — because [reason]. Hire when [condition]."
+      ],
+      "immediate_restructure": [
+        "Action the owner can take today without hiring anyone — e.g. 'Designate [Name] as the single point of contact for all customer complaints. Remove yourself from that loop immediately.'"
+      ]
+    }
+  },
+
+  "process_map": [
+    {
+      "note": "Map the 3-5 most critical processes in this business — the ones that happen most often or carry the most revenue/risk. For each, show exactly how it works today (with the owner's involvement made explicit) versus how it should work (with the owner removed from routine steps). Use language the owner will recognise. Name the people involved. Do not map processes that were not described in the data.",
+      "process_name": "e.g. Customer Enquiry to First Sale",
+      "current_flow": [
+        "Step 1: Customer contacts the business (how — phone, walk-in, WhatsApp)",
+        "Step 2: Owner personally handles the enquiry",
+        "Step 3: Owner gives a quote verbally with no written record",
+        "Step 4: Customer either buys or the owner follows up by memory"
+      ],
+      "current_owner_involvement": "100% — owner is the process",
+      "current_problems": [
+        "No record of enquiries that didn't convert — no ability to follow up",
+        "Owner is the only one who can quote, so every enquiry waits for them"
+      ],
+      "ideal_flow": [
+        "Step 1: Enquiry received by designated person using intake form",
+        "Step 2: Qualification checklist completed",
+        "Step 3: Standard quote generated from price list and sent within 24 hours",
+        "Step 4: Automated or scheduled follow-up at day 3 and day 7"
+      ],
+      "ideal_owner_involvement": "Owner reviews quotes over ₦X only. Everything else runs without them.",
+      "what_changes": "The single change that unlocks this process — the one structural fix."
+    }
+  ]
 }`,
       },
     ],
