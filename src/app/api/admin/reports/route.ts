@@ -1,5 +1,6 @@
 import { verifyOperatorSecret, operatorAdminClient, forbidden, corsHeaders } from '@/lib/operator-auth'
 import { NextResponse } from 'next/server'
+import { notify, reportReadyNotification } from '@/lib/comms'
 
 export async function OPTIONS() {
   return new Response(null, { status: 204, headers: corsHeaders() })
@@ -48,7 +49,27 @@ export async function POST(req: Request) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders() })
 
   const { data: report } = await db.from('reports').select('business_id').eq('id', report_id).single()
-  if (report) await db.from('businesses').update({ stage: 'guide' }).eq('id', report.business_id)
+  if (report) {
+    await db.from('businesses').update({ stage: 'guide' }).eq('id', report.business_id)
+
+    // Notify owner via ERA Comms (fire-and-forget — never blocks release)
+    const { data: biz } = await db
+      .from('businesses')
+      .select('name, owner_name, owner_phone, owner_email')
+      .eq('id', report.business_id)
+      .single()
+
+    if (biz) {
+      const portalUrl = process.env.ERA_STRUCTURE_CLIENT_URL ?? 'https://era-structure-client.railway.app'
+      notify(reportReadyNotification({
+        ownerName:   biz.owner_name,
+        businessName: biz.name,
+        ownerPhone:  biz.owner_phone,
+        ownerEmail:  biz.owner_email,
+        portalUrl,
+      }))
+    }
+  }
 
   return NextResponse.json({ success: true }, { headers: corsHeaders() })
 }
