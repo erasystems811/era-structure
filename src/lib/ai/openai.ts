@@ -64,12 +64,12 @@ export async function generateReport(
         content: `Generate the Full Standard Report for ${businessName} — a ${businessType} business.
 
 STAFF:
-${staffMembers.map(s => `- ${s.name}: ${s.role}`).join('\n')}
+${staffMembers.length > 0 ? staffMembers.map(s => `- ${s.name}: ${s.role}`).join('\n') : 'Solo — no staff'}
 
-LAYER 1 — FEELING AUDIT (owner's perception):
+LAYER 1 — SELF-ASSESSMENT (owner's answers about their business):
 ${JSON.stringify(layer1, null, 2)}
 
-LAYER 2 — LIVE OBSERVATION (what was actually observed):
+LAYER 2 — TEAM INTERVIEW (owner + staff answers about day-to-day reality):
 ${JSON.stringify(layer2, null, 2)}
 
 Generate the report with these exact 7 sections. Every finding must reference specific data points. Use staff names. Use owner's actual numbers.
