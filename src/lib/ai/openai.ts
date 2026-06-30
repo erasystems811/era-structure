@@ -282,7 +282,7 @@ Return this exact JSON structure:
   "closing_assessment": "One paragraph. Written directly to the owner. Honest, direct, human. Reference what they said and what the data showed. Name the real problem — not the symptoms. This is the consultant speaking person to person. No corporate language. No filler.",
 
   "eisenhower_matrix": {
-    "note": "Classify every task mentioned in the assessment — plus suggest additional tasks the owner likely does but did not mention — into the correct quadrant. Be specific. Use task names the owner will recognise. For solopreneurs, Q3 means 'automate or outsource when you are ready' — label it that way. Do NOT force tasks into quadrants they do not belong in. It is fine for a quadrant to have fewer items if the evidence does not support more.",
+    "note": "Every quadrant MUST contain both assessment tasks (from what the owner told you) AND suggested tasks (tasks this type of business almost certainly does but the owner did not mention). Suggested tasks are not optional — they are a core part of the value here. The owner does not always list every task they do. Think about what a business of this type and size almost certainly does day-to-day — WhatsApp follow-ups, paying suppliers, reviewing revenue, posting on social media, managing staff — and add the relevant ones as suggested. Mark assessment tasks source: 'assessment', suggested tasks source: 'suggested'. For solopreneurs, Q3 means 'automate or outsource when you are ready' — label it that way. Do NOT force tasks into quadrants they do not belong in.",
     "q1_do": [
       {
         "task": "Exact task name the owner will recognise",
