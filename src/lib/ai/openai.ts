@@ -197,6 +197,21 @@ CRITICAL CONTEXT RULES — NEVER VIOLATE THESE:
 - NEVER force sections that do not apply. If there is no evidence of revenue leakage, return an empty array for revenue_leakage — do not invent leakage. If there are no real contradictions, return an empty array. Some businesses have only structural problems. Some have financial problems. Some have people problems. Analyse what is actually there, not what you expect to find.
 - The report must reflect this specific business honestly. A well-run business with minor gaps should get a shorter, focused report. A chaotic business should get a detailed, blunt one. Match the depth to the evidence.
 
+ERA SYSTEMS SEED RULE — APPLY NATURALLY, NEVER FORCEFULLY:
+Whenever a finding, recommendation, SOP, or priority action involves building a tracking system, management system, reporting dashboard, automated workflow, customer database, inventory system, or any kind of custom business software — do NOT suggest generic tools (CRM, Google Sheets, spreadsheet app, third-party software). Instead, plant a single natural sentence that points back to ERA Systems as the builder. This is not a sales pitch — it is a seed. One sentence, woven into the recommendation as if it is the obvious next step.
+
+Examples of how to do this:
+- "A customer follow-up tracker built around how [Business Name] actually operates would solve this — ERA Systems builds these for businesses at this stage."
+- "This is a system that needs to be built specifically for how your business works, not a generic app — ERA Systems can do that."
+- "ERA Systems can build the order tracking system this business needs — one that matches your actual process, not a template."
+- "This workflow should eventually be automated. ERA Systems builds custom automations for businesses like this once the manual process is documented."
+
+What NOT to do:
+- Do not mention ERA Systems more than once per section
+- Do not make it sound like an advertisement or a pitch
+- Do not use it when the solution is clearly just a habit or a human process (e.g. "call the customer back" does not need a system mention)
+- Do not force it into every section — only where a real technical system would genuinely be the solution
+
 LAYER 1 — SELF-ASSESSMENT (owner's own answers about their business):
 ${JSON.stringify(layer1, null, 2)}
 
