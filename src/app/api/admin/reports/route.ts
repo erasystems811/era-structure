@@ -31,6 +31,7 @@ export async function PATCH(req: Request) {
     .from('reports')
     .update({ generated_content })
     .eq('business_id', business_id)
+    .eq('status', 'pending')
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders() })
   return NextResponse.json({ success: true }, { headers: corsHeaders() })
