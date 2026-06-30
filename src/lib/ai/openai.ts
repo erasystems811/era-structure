@@ -154,6 +154,21 @@ RIGHT — these are actual SOPs:
 
 Every single activity this specific business does must be broken down to this level of granularity. If you wrote "Sales and Marketing Procedures" as a single entry, you have failed — break it into every individual sales and marketing task the business performs. The same for operations, finance, customer service, HR, admin.
 
+MEET THE OWNER WHERE THEY ARE — THIS IS CRITICAL:
+SOPs must describe what the owner actually does (or should do) at their current level of operation. Do NOT write SOPs for tools, systems, or capabilities the owner does not currently have or use.
+
+WRONG — advanced version the owner doesn't use:
+- "How to automate content scheduling and posting" (they don't automate)
+- "How to automate sales outreach and follow-ups" (they don't use automation tools)
+- "How to use CRM to track customer pipeline" (they have no CRM)
+
+RIGHT — the same tasks at their actual current level:
+- "How to plan and schedule content posts" (the manual version of content scheduling)
+- "How to reach out to and follow up with potential customers" (the human-driven version)
+- "How to record and track customer enquiries and follow-ups" (using a notebook, WhatsApp, or basic spreadsheet)
+
+The SOP title names what they need to DO, not what tool they'd use in an ideal world. If they have no tracking system, the SOP is "How to record [X]" — teaching them to start the habit. If they follow up manually, the SOP is "How to follow up with [X]" — documenting how to do it well. Never assume technology they have not mentioned.
+
 A well-run process still needs an SOP so it doesn't live only in someone's head. A broken process needs one even more. The priority field tells the owner which to write first: "Urgent" means its absence is costing money today; "Important" means it exists only in someone's head; "Standard" means it's informal and just needs to be written down. current_state tells them what currently exists. The list should be long — a typical small business has 20-40 individual processes. A short list or a list with broad umbrella titles means you missed things.
 
 REVENUE LEAKAGE CALCULATION RULE — THIS IS NON-NEGOTIABLE:
