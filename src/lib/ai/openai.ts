@@ -217,7 +217,39 @@ Return this exact JSON structure:
     "Another specific outcome"
   ],
 
-  "closing_assessment": "One paragraph. Written directly to the owner. Honest, direct, human. Reference what they said and what the data showed. Name the real problem — not the symptoms. This is the consultant speaking person to person. No corporate language. No filler."
+  "closing_assessment": "One paragraph. Written directly to the owner. Honest, direct, human. Reference what they said and what the data showed. Name the real problem — not the symptoms. This is the consultant speaking person to person. No corporate language. No filler.",
+
+  "eisenhower_matrix": {
+    "note": "Classify every task mentioned in the assessment — plus suggest additional tasks the owner likely does but did not mention — into the correct quadrant. Be specific. Use task names the owner will recognise. For solopreneurs, Q3 means 'automate or outsource when you are ready' — label it that way. Do NOT force tasks into quadrants they do not belong in. It is fine for a quadrant to have fewer items if the evidence does not support more.",
+    "q1_do": [
+      {
+        "task": "Exact task name the owner will recognise",
+        "source": "assessment | suggested",
+        "note": "One sentence: why this is urgent AND important right now"
+      }
+    ],
+    "q2_schedule": [
+      {
+        "task": "...",
+        "source": "assessment | suggested",
+        "note": "Why this is important but can be planned, not reacted to"
+      }
+    ],
+    "q3_delegate": [
+      {
+        "task": "...",
+        "source": "assessment | suggested",
+        "note": "Why someone else (or a system/tool) should handle this, not the owner"
+      }
+    ],
+    "q4_eliminate": [
+      {
+        "task": "...",
+        "source": "assessment | suggested",
+        "note": "Why this wastes time without meaningful business value"
+      }
+    ]
+  }
 }`,
       },
     ],
