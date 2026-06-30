@@ -430,6 +430,17 @@ Return this exact JSON structure:
       "ideal_owner_involvement": "Owner reviews quotes over ₦X only. Everything else runs without them.",
       "what_changes": "The single change that unlocks this process — the one structural fix."
     }
+  ],
+
+  "systems_recommendations": [
+    {
+      "note": "Recommend 3–6 specific systems that would genuinely reduce manual work for THIS business once their processes are documented and running. These are not generic software suggestions — each must be tailored to what this specific business actually does. The tone is: 'once you have the manual process working, this system takes that work off your plate entirely.' Do not recommend systems the business is not ready for. Do not make it a sales pitch. Write like a consultant who genuinely wants this owner's life to be easier. ERA Systems builds custom versions of these — mention it once per item, naturally, without pressure.",
+      "system_name": "e.g. Customer Enquiry Tracker",
+      "what_it_does": "What this system would do for this specific business — described in their operational language, not tech language.",
+      "manual_work_it_replaces": "The exact manual task or habit it removes — e.g. 'trying to remember which customers to follow up with, checking WhatsApp history manually'",
+      "build_when": "What condition must be true before this is worth building — e.g. 'Once you have a documented follow-up process running manually for 4+ weeks and at least one person besides the owner doing follow-ups'",
+      "era_systems_note": "One natural sentence about ERA Systems building this — e.g. 'ERA Systems can build this specifically for how your follow-up process actually works, rather than forcing your team to adapt to a generic CRM.' No pressure, just a seed."
+    }
   ]
 }`,
       },
@@ -522,6 +533,15 @@ const SECTION_SCHEMAS: Record<string, string> = {
     "ideal_flow": ["Step 1", "Step 2"],
     "ideal_owner_involvement": "...",
     "what_changes": "The single structural change that unlocks this."
+  }
+]`,
+  systems_recommendations: `[
+  {
+    "system_name": "Specific system name for this business",
+    "what_it_does": "What it does — in the owner's operational language.",
+    "manual_work_it_replaces": "The exact manual habit or task this removes.",
+    "build_when": "The condition that must be true before building this is worthwhile.",
+    "era_systems_note": "One natural sentence mentioning ERA Systems as the builder."
   }
 ]`,
   eisenhower_matrix: `{
