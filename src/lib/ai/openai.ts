@@ -329,39 +329,6 @@ Return this exact JSON structure:
 
   "closing_assessment": "One paragraph. Written directly to the owner. Honest, direct, human. Reference what they said and what the data showed. Name the real problem — not the symptoms. This is the consultant speaking person to person. No corporate language. No filler.",
 
-  "eisenhower_matrix": {
-    "note": "Generate TWO versions of the matrix: current and ideal. Current shows how the owner's time is actually distributed today. Ideal shows how it should look once the ideal org structure from this report is fully in place — roles hired, SOPs documented, delegation working. The owner keeps this matrix long-term and checks it regularly to see if they are operating closer to the ideal. The difference between current and ideal is the transformation story of the report. In the ideal state, the owner's Q1 should be smaller (fewer fires), Q2 should be larger (more strategy), and Q3 should be nearly empty (delegated to people or systems). Every quadrant in both versions MUST contain both assessment tasks (from what the owner told you) AND suggested tasks (what this type of business almost certainly does). Mark assessment tasks source: 'assessment', suggested source: 'suggested'. For solopreneurs in the ideal state, Q3 means 'handled by a system or outsourced role'.",
-    "current": {
-      "q1_do": [
-        { "task": "Exact task name — what the owner is urgently handling today", "source": "assessment | suggested", "note": "Why this is urgent AND important right now" }
-      ],
-      "q2_schedule": [
-        { "task": "...", "source": "assessment | suggested", "note": "Why important but not yet planned" }
-      ],
-      "q3_delegate": [
-        { "task": "...", "source": "assessment | suggested", "note": "Why the owner is doing this but shouldn't be" }
-      ],
-      "q4_eliminate": [
-        { "task": "...", "source": "assessment | suggested", "note": "Why this wastes time without business value" }
-      ]
-    },
-    "ideal": {
-      "note_for_ai": "This is the owner's time once the ideal org is in place. Tasks that are currently in Q3 (owner doing them) should move here to Q3 (delegated to named role) or disappear entirely. New Q2 items should appear — strategic things the owner currently has no time for. Q1 should be shorter. Show the owner what their week looks like when the business runs without them being the centre of everything.",
-      "q1_do": [
-        { "task": "What remains genuinely urgent and important even in the ideal state", "source": "suggested", "note": "Why this still requires the owner personally even when fully structured" }
-      ],
-      "q2_schedule": [
-        { "task": "Strategic work the owner will finally have time for", "source": "suggested", "note": "Why this becomes possible once ops are delegated" }
-      ],
-      "q3_delegate": [
-        { "task": "Task currently owned by the owner — delegated to which role in the ideal org", "source": "assessment | suggested", "note": "Who owns this in the ideal structure and why the owner must fully exit it" }
-      ],
-      "q4_eliminate": [
-        { "task": "...", "source": "assessment | suggested", "note": "Still true in the ideal state — stop doing this" }
-      ]
-    }
-  },
-
   "org_structure": {
     "note": "This section has two jobs. First: show the owner exactly what their business looks like today — who is doing what, who is overloaded, what falls through the gaps. Second: show them the FULL org structure their business should eventually have. The ideal structure is a 5–10 year vision. It is NOT limited by what they can afford today. It shows the complete tree of roles a properly run version of this business type needs — every department, every function covered. The owner uses this to understand what they are building toward and in what order. A business with 2 staff today may need 15 roles in 5 years — show all of them. Do not be conservative. A real business has Sales, Marketing, Operations, Finance, Customer Service, HR (at scale), and any function specific to their industry. Draw the full tree using reports_to to show the hierarchy. Assign hire_priority 1 to whichever role the business needs most urgently given the current bottlenecks. The hiring_sequence then explains the logic — when to hire each role, what condition triggers each hire, and what problem each hire solves.",
 
@@ -442,32 +409,6 @@ Return this exact JSON structure:
       ]
     }
   },
-
-  "process_map": [
-    {
-      "note": "Map the 3-5 most critical processes in this business — the ones that happen most often or carry the most revenue/risk. For each, show exactly how it works today (with the owner's involvement made explicit) versus how it should work (with the owner removed from routine steps). Use language the owner will recognise. Name the people involved. Do not map processes that were not described in the data.",
-      "process_name": "e.g. Customer Enquiry to First Sale",
-      "current_flow": [
-        "Step 1: Customer contacts the business (how — phone, walk-in, WhatsApp)",
-        "Step 2: Owner personally handles the enquiry",
-        "Step 3: Owner gives a quote verbally with no written record",
-        "Step 4: Customer either buys or the owner follows up by memory"
-      ],
-      "current_owner_involvement": "100% — owner is the process",
-      "current_problems": [
-        "No record of enquiries that didn't convert — no ability to follow up",
-        "Owner is the only one who can quote, so every enquiry waits for them"
-      ],
-      "ideal_flow": [
-        "Step 1: Enquiry received by designated person using intake form",
-        "Step 2: Qualification checklist completed",
-        "Step 3: Standard quote generated from price list and sent within 24 hours",
-        "Step 4: Automated or scheduled follow-up at day 3 and day 7"
-      ],
-      "ideal_owner_involvement": "Owner reviews quotes over ₦X only. Everything else runs without them.",
-      "what_changes": "The single change that unlocks this process — the one structural fix."
-    }
-  ],
 
   "systems_recommendations": [
     {
@@ -564,17 +505,6 @@ const SECTION_SCHEMAS: Record<string, string> = {
     "immediate_restructure": ["What owner can reassign today without hiring"]
   }
 }`,
-  process_map: `[
-  {
-    "process_name": "...",
-    "current_flow": ["Step 1", "Step 2"],
-    "current_owner_involvement": "...",
-    "current_problems": ["..."],
-    "ideal_flow": ["Step 1", "Step 2"],
-    "ideal_owner_involvement": "...",
-    "what_changes": "The single structural change that unlocks this."
-  }
-]`,
   systems_recommendations: `[
   {
     "system_name": "Specific system name for this business",
@@ -584,20 +514,6 @@ const SECTION_SCHEMAS: Record<string, string> = {
     "era_systems_note": "One natural sentence mentioning ERA Systems as the builder."
   }
 ]`,
-  eisenhower_matrix: `{
-  "current": {
-    "q1_do": [{ "task": "...", "source": "assessment | suggested", "note": "Why urgent AND important today" }],
-    "q2_schedule": [{ "task": "...", "source": "...", "note": "..." }],
-    "q3_delegate": [{ "task": "...", "source": "...", "note": "Why owner is doing this but shouldn't be" }],
-    "q4_eliminate": [{ "task": "...", "source": "...", "note": "..." }]
-  },
-  "ideal": {
-    "q1_do": [{ "task": "...", "source": "suggested", "note": "Still requires owner even in ideal state" }],
-    "q2_schedule": [{ "task": "...", "source": "suggested", "note": "Strategic work unlocked by delegation" }],
-    "q3_delegate": [{ "task": "...", "source": "assessment | suggested", "note": "Delegated to which role in ideal org" }],
-    "q4_eliminate": [{ "task": "...", "source": "...", "note": "..." }]
-  }
-}`,
 }
 
 export async function generateSection(

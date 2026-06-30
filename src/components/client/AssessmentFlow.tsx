@@ -86,21 +86,21 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
     const leaks = (Array.isArray(c.revenue_leakage) ? c.revenue_leakage : []) as { title?: string; description?: string; frequency?: string; monthly_min?: number; monthly_max?: number; calculation_note?: string }[]
     const gaps = (Array.isArray(c.structural_gaps) ? c.structural_gaps : []) as { gap?: string; severity?: string; impact?: string }[]
     const actions = c.priority_actions as { immediate?: unknown[]; short_term?: unknown[]; medium_term?: unknown[] } | undefined
-    const sops = (Array.isArray(c.sop_list) ? c.sop_list : []) as { title?: string; responsible?: string; priority?: string }[]
+    const sops = (Array.isArray(c.sop_list) ? c.sop_list : []) as { title?: string; responsible?: string; priority?: string; current_state?: string }[]
+    const delegation = (Array.isArray(c.delegation_readiness) ? c.delegation_readiness : []) as { person?: string; role?: string; tasks_to_absorb?: string; what_they_need_first?: string; risk_note?: string }[]
     const vision = (Array.isArray(c.vision_90_days) ? c.vision_90_days : []) as string[]
     const closing = c.closing_assessment as string | undefined
-    const matrix = c.eisenhower_matrix as Record<string, { task?: string; source?: string; note?: string }[]> | undefined
+    const orgStructure = c.org_structure as {
+      current?: { people?: { name?: string; title?: string; actual_roles?: string[]; overload_note?: string }[]; structural_problems?: string[] }
+      ideal?: { positions?: { title?: string; department?: string; focus?: string; reports_to?: string | null; status?: string; hire_priority?: number | null }[]; hiring_sequence?: string[]; immediate_restructure?: string[] }
+    } | undefined
+    const systems = (Array.isArray(c.systems_recommendations) ? c.systems_recommendations : []) as { system_name?: string; what_it_does?: string; manual_work_it_replaces?: string; build_when?: string; era_systems_note?: string }[]
     const adminNotes = report.admin_notes
     const totalLeak = leaks.reduce((s, l) => s + (l.monthly_max ?? 0), 0)
     const hasContent = !!(exec || snap?.one_line_diagnosis || findings.length || leaks.length || gaps.length || closing)
 
     const SEVERITY_COLOR: Record<string, string> = { Critical: 'text-red-600', High: 'text-orange-500', Medium: 'text-yellow-600' }
-    const QUADRANT_CONFIG = [
-      { key: 'q1_do', label: 'Do Now', sub: 'Urgent + Important', color: 'border-red-200 bg-red-50', tag: 'bg-red-100 text-red-700' },
-      { key: 'q2_schedule', label: 'Schedule', sub: 'Important, Not Urgent', color: 'border-teal-200 bg-teal-50', tag: 'bg-teal-100 text-teal-700' },
-      { key: 'q3_delegate', label: 'Delegate / Automate', sub: 'Urgent, Not Important', color: 'border-amber-200 bg-amber-50', tag: 'bg-amber-100 text-amber-700' },
-      { key: 'q4_eliminate', label: 'Eliminate', sub: 'Not Urgent, Not Important', color: 'border-gray-200 bg-gray-50', tag: 'bg-gray-100 text-gray-500' },
-    ]
+    const DEPT_COLOR: Record<string, string> = { Leadership: 'bg-[#C9952B]/10 border-[#C9952B]/30 text-[#C9952B]', Sales: 'bg-teal-50 border-teal-200 text-teal-700', Marketing: 'bg-purple-50 border-purple-200 text-purple-700', Operations: 'bg-pink-50 border-pink-200 text-pink-700', Finance: 'bg-blue-50 border-blue-200 text-blue-700' }
 
     return (
       <div className="space-y-5">
@@ -329,42 +329,147 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
           </Card>
         )}
 
-        {/* Eisenhower Matrix */}
-        {matrix && (
-          <div>
-            <div className="px-1 mb-3">
-              <h2 className="text-sm font-semibold text-[#0D1B3E]">Priority Matrix — How to Structure Your Time</h2>
-              <p className="text-xs text-[#666] mt-0.5">Based on your assessment. Hover tasks for context.</p>
+        {/* Delegation Readiness */}
+        {delegation.length > 0 && (
+          <Card>
+            <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
+              <h2 className="text-sm font-semibold text-[#0D1B3E]">Delegation Readiness</h2>
             </div>
-            <div className="rounded-xl border border-[#0D1B3E]/10 overflow-hidden">
-              <div className="grid grid-cols-2 divide-x divide-y divide-[#0D1B3E]/8">
-                {QUADRANT_CONFIG.map(q => {
-                  const tasks = (matrix[q.key] ?? []) as { task?: string; source?: string; note?: string }[]
-                  return (
-                    <div key={q.key} className={`p-4 ${q.color} border ${q.color}`}>
-                      <div className="mb-3">
-                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${q.tag}`}>{q.label}</span>
-                        <p className="text-[10px] text-[#999] mt-1">{q.sub}</p>
+            <div className="divide-y divide-[#0D1B3E]/6">
+              {delegation.map((d, i) => (
+                <div key={i} className="px-5 py-4 space-y-1.5">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-semibold text-[#0D1B3E]">{d.person}</p>
+                    {d.role && <span className="text-xs text-[#666] bg-[#F4F2EE] px-2 py-0.5 rounded-full">{d.role}</span>}
+                  </div>
+                  {d.tasks_to_absorb && <p className="text-xs text-[#1A1A2E]"><span className="font-medium">Can take on:</span> {d.tasks_to_absorb}</p>}
+                  {d.what_they_need_first && <p className="text-xs text-[#666]"><span className="font-medium">Needs first:</span> {d.what_they_need_first}</p>}
+                  {d.risk_note && <p className="text-xs text-amber-700 bg-amber-50 rounded px-2 py-1">{d.risk_note}</p>}
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        {/* Org Structure */}
+        {orgStructure && (
+          <Card>
+            <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
+              <h2 className="text-sm font-semibold text-[#0D1B3E]">Organisation Structure</h2>
+            </div>
+            <CardBody className="space-y-5">
+              {/* Current state */}
+              {orgStructure.current && (
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-[#999] mb-3">How It Looks Today</p>
+                  <div className="space-y-3">
+                    {(orgStructure.current.people ?? []).map((p, i) => (
+                      <div key={i} className="rounded-lg border border-[#0D1B3E]/8 bg-[#F4F2EE] px-4 py-3">
+                        <p className="text-sm font-semibold text-[#0D1B3E]">{p.name} <span className="font-normal text-[#666]">— {p.title}</span></p>
+                        {p.actual_roles && p.actual_roles.length > 0 && (
+                          <ul className="mt-2 space-y-0.5">
+                            {p.actual_roles.map((r, j) => (
+                              <li key={j} className="flex gap-1.5 text-xs text-[#666]"><span className="text-[#C9952B] shrink-0">·</span>{r}</li>
+                            ))}
+                          </ul>
+                        )}
+                        {p.overload_note && <p className="text-xs text-red-600 mt-2 font-medium">{p.overload_note}</p>}
                       </div>
-                      <div className="space-y-2">
-                        {tasks.length === 0 ? (
-                          <p className="text-xs text-[#bbb] italic">None identified</p>
-                        ) : tasks.map((t, i) => (
-                          <div key={i} className="flex gap-1.5">
-                            <span className="text-[#0D1B3E]/30 text-xs mt-0.5 shrink-0">·</span>
-                            <div>
-                              <p className="text-xs text-[#1A1A2E] leading-snug">{t.task}</p>
-                              {t.source === 'suggested' && <p className="text-[9px] text-[#999] uppercase tracking-wide">suggested</p>}
+                    ))}
+                  </div>
+                  {(orgStructure.current.structural_problems ?? []).length > 0 && (
+                    <div className="mt-3 space-y-1">
+                      {(orgStructure.current.structural_problems ?? []).map((prob, i) => (
+                        <p key={i} className="text-xs text-red-700 bg-red-50 rounded px-3 py-1.5">{prob}</p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Ideal org */}
+              {orgStructure.ideal && (
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-[#999] mb-3">The Structure You're Building Toward (5–10 Year Vision)</p>
+                  <div className="space-y-2">
+                    {(orgStructure.ideal.positions ?? []).map((pos, i) => {
+                      const dept = pos.department ?? 'Other'
+                      const color = DEPT_COLOR[dept] ?? 'bg-gray-50 border-gray-200 text-gray-600'
+                      return (
+                        <div key={i} className="rounded-lg border border-[#0D1B3E]/8 bg-white px-4 py-3">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <p className="text-sm font-semibold text-[#0D1B3E]">{pos.title}</p>
+                                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${color}`}>{dept}</span>
+                                {pos.status === 'exists' && <span className="text-[10px] text-teal-700 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-full font-semibold">Exists</span>}
+                              </div>
+                              {pos.reports_to && <p className="text-xs text-[#999] mt-0.5">Reports to: {pos.reports_to}</p>}
+                              {pos.focus && <p className="text-xs text-[#666] mt-1">{pos.focus}</p>}
                             </div>
+                            {pos.hire_priority != null && (
+                              <span className="text-xs font-bold text-white bg-[#0D1B3E] rounded-full w-6 h-6 flex items-center justify-center shrink-0">#{pos.hire_priority}</span>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                  {(orgStructure.ideal.immediate_restructure ?? []).length > 0 && (
+                    <div className="mt-4">
+                      <p className="text-xs font-bold uppercase tracking-wide text-[#C9952B] mb-2">Do This Now (Without Hiring)</p>
+                      <div className="space-y-1">
+                        {(orgStructure.ideal.immediate_restructure ?? []).map((item, i) => (
+                          <div key={i} className="flex gap-2 text-xs text-[#1A1A2E]">
+                            <span className="text-[#C9952B] shrink-0 font-bold">{i + 1}.</span>
+                            <p>{item}</p>
                           </div>
                         ))}
                       </div>
                     </div>
-                  )
-                })}
-              </div>
+                  )}
+                  {(orgStructure.ideal.hiring_sequence ?? []).length > 0 && (
+                    <div className="mt-4">
+                      <p className="text-xs font-bold uppercase tracking-wide text-[#999] mb-2">Hiring Sequence</p>
+                      <div className="space-y-2">
+                        {(orgStructure.ideal.hiring_sequence ?? []).map((step, i) => (
+                          <div key={i} className="flex gap-2 text-xs text-[#666]">
+                            <span className="text-[#0D1B3E] shrink-0 font-bold">{i + 1}.</span>
+                            <p>{step}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardBody>
+          </Card>
+        )}
+
+        {/* Systems Recommendations */}
+        {systems.length > 0 && (
+          <Card>
+            <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
+              <h2 className="text-sm font-semibold text-[#0D1B3E]">Systems to Build</h2>
+              <p className="text-xs text-[#666] mt-0.5">Once your manual processes are running, these systems remove the manual work entirely.</p>
             </div>
-          </div>
+            <div className="divide-y divide-[#0D1B3E]/6">
+              {systems.map((s, i) => (
+                <div key={i} className="px-5 py-4 space-y-2">
+                  <p className="text-sm font-semibold text-[#0D1B3E]">{s.system_name}</p>
+                  {s.what_it_does && <p className="text-xs text-[#666] leading-relaxed">{s.what_it_does}</p>}
+                  {s.manual_work_it_replaces && (
+                    <p className="text-xs text-[#1A1A2E] bg-[#F4F2EE] rounded px-2 py-1.5">
+                      <span className="font-medium">Replaces:</span> {s.manual_work_it_replaces}
+                    </p>
+                  )}
+                  {s.build_when && <p className="text-xs text-teal-700"><span className="font-medium">Build when:</span> {s.build_when}</p>}
+                  {s.era_systems_note && <p className="text-xs text-[#C9952B] italic">{s.era_systems_note}</p>}
+                </div>
+              ))}
+            </div>
+          </Card>
         )}
 
         {/* Closing */}
