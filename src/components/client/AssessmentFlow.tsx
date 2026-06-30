@@ -195,7 +195,7 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
               </div>
               <div className="flex gap-3">
                 <span className="text-xs font-bold text-[#C9952B] mt-0.5 w-4 shrink-0">2</span>
-                <p className="text-sm text-[#1A1A2E]"><span className="font-semibold">Team Interview</span> — you and each staff member answer a short set of questions separately. This is where we find out how the business really runs, not just how you think it does.</p>
+                <p className="text-sm text-[#1A1A2E]"><span className="font-semibold">Owner Interview</span> — a deeper set of questions about how you actually operate day to day. If you have staff, they each get a short section too so we can see how the business really runs.</p>
               </div>
             </div>
             <p className="text-sm text-[#666] leading-relaxed">
@@ -294,8 +294,12 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
     return (
       <div className="space-y-5">
         <div>
-          <h1 className="text-xl font-bold text-[#0D1B3E]">Team Interview</h1>
-          <p className="text-sm text-[#666] mt-0.5">Sit with each person separately and record their answers honestly</p>
+          <h1 className="text-xl font-bold text-[#0D1B3E]">Owner Interview</h1>
+          <p className="text-sm text-[#666] mt-0.5">
+            {staffList.filter(s => s.name).length > 0
+              ? 'Sit with each person separately and record their answers honestly'
+              : 'Answer these questions about how you run the business day to day'}
+          </p>
         </div>
 
         {/* Owner section */}
@@ -310,8 +314,14 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
           </CardBody>
         </Card>
 
-        {/* Per-staff sections */}
-        {staffList.filter(s => s.name).map((s, i) => (
+        {/* Per-staff sections — only if they have staff */}
+        {staffList.filter(s => s.name).length === 0 ? (
+          <Card>
+            <CardBody className="py-4">
+              <p className="text-sm text-[#666]">No staff members added — only your section above applies.</p>
+            </CardBody>
+          </Card>
+        ) : staffList.filter(s => s.name).map((s, i) => (
           <Card key={i}>
             <div className="px-5 py-3.5 border-b border-[#0D1B3E]/8">
               <h2 className="text-sm font-semibold text-[#0D1B3E]">{s.name} — {s.role}</h2>
