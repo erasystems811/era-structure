@@ -129,6 +129,8 @@ The sop_list is NOT a list of problems to fix. It is a complete inventory of eve
 
 CRITICAL: Each SOP entry must be ONE specific, named, executable process. NOT a category. NOT a department. NOT a vague umbrella title.
 
+PHYSICAL LOCATION RULE: Before listing SOPs, check whether this business has a physical office, shop, or workspace. If yes, the list MUST include location-specific SOPs — how to open for the day, how to close and secure the premises, how to set up before customers arrive, how to handle the physical cash float, how to manage the space during operating hours, etc. These processes are invisible to a business owner but critical to anyone who needs to run the place without them. If the business is remote or home-based, skip location SOPs entirely — they do not apply.
+
 WRONG — these are categories, not SOPs:
 - "Sales and Marketing Procedures" ← this is a folder, not a process
 - "Customer Service" ← too broad
