@@ -1,5 +1,6 @@
-const COMMS_URL    = process.env.ERA_COMMS_API_URL
-const COMMS_SECRET = process.env.ERA_COMMS_OPERATOR_SECRET
+const COMMS_URL        = process.env.ERA_COMMS_API_URL
+const COMMS_SECRET     = process.env.ERA_COMMS_OPERATOR_SECRET
+const COMMS_SESSION_ID = process.env.ERA_COMMS_SESSION_ID // optional: skip auto-discovery
 
 export interface NotifyOptions {
   to?: string          // E.164 phone number for WhatsApp
@@ -26,7 +27,7 @@ export async function notify(opts: NotifyOptions): Promise<NotifyResult> {
       'Content-Type':      'application/json',
       'X-Operator-Secret': COMMS_SECRET,
     },
-    body: JSON.stringify(opts),
+    body: JSON.stringify({ ...opts, ...(COMMS_SESSION_ID ? { sessionId: COMMS_SESSION_ID } : {}) }),
   })
 
   if (!res.ok) {
