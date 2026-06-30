@@ -352,6 +352,10 @@ function buildInterviewSections(staffList: { name: string; role: string }[]) {
     { id: 'owner_hours', text: "How many hours per day do you spend doing tasks yourself (not managing or planning)?", type: 'number' },
     { id: 'owner_absent_gaps', text: "When you're absent, which tasks do NOT get done because nobody else knows how?", type: 'short-text' },
     { id: 'owner_stress', text: "What about running this business stresses you most?", type: 'short-text' },
+    { id: 'owner_salary', text: "Do you pay yourself a fixed salary each month or take money from the business as you need it?", type: 'dropdown', options: ["Fixed salary every month", "Take money as I need it", "Mix of both", "I don't take money from the business yet"] },
+    { id: 'owner_cash_shortfall', text: "Has there been a month in the last year where there wasn't enough cash to cover everything?", type: 'dropdown', options: ['Yes, more than once', 'Yes, once or twice', 'Close but managed', 'No, never'] },
+    { id: 'owner_growth_ceiling', text: "What is the main thing stopping this business from growing right now?", type: 'short-text' },
+    { id: 'owner_3yr_goal', text: "What do you want this business to look like in 3 years?", type: 'dropdown', options: ['Much bigger with more staff and locations', 'Running without me day-to-day', 'Sold or handed over', 'Same size but more profitable', 'Just stable and consistent'] },
     { id: 'owner_broken_process', text: "A process in your business that 'works' but you know isn't the right way to do it:", type: 'short-text' },
     { id: 'owner_not_my_job', text: "One thing you did yesterday that you honestly feel is NOT your job:", type: 'short-text' },
   ]
@@ -366,6 +370,9 @@ function buildInterviewSections(staffList: { name: string; role: string }[]) {
       { id: `${p}_decisions`, text: `When something unexpected happens, do you handle it yourself or call the owner?`, type: 'dropdown', options: ['Always call the owner', 'Usually call the owner', 'Depends on the situation', 'Usually handle it myself', 'Always handle it myself'] },
       { id: `${p}_no_permission`, text: `Is there something you are not allowed to decide yourself that slows down your work?`, type: 'short-text' },
       { id: `${p}_hidden`, text: `Is there something you do regularly that you were never officially asked to do — you just started doing it because it needed to be done?`, type: 'short-text' },
+      { id: `${p}_complaints`, text: `What do customers complain about most in this business?`, type: 'short-text' },
+      { id: `${p}_daily_volume`, text: `On a busy day, roughly how many customers or sales happen?`, type: 'number' },
+      { id: `${p}_unrecorded`, text: `Do you ever see a payment or sale that doesn't get recorded anywhere?`, type: 'dropdown', options: ['Yes, it happens often', 'Yes, occasionally', 'Rarely', 'Never'] },
       { id: `${p}_owner_doesnt_know`, text: `Is there anything about how this business really runs that you think the owner doesn't fully know or understand?`, type: 'short-text' },
     ]
   }
