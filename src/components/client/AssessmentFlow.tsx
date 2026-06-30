@@ -359,7 +359,7 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
             <ChevronLeft size={16} /> Edit assessment
           </button>
           <Button onClick={submitTeamInterview} loading={loading} size="lg" className="flex-1">
-            Submit team interview
+            {hasSoloBusiness ? 'Submit' : 'Submit team interview'}
           </Button>
         </div>
       </div>
@@ -404,12 +404,18 @@ function buildInterviewSections(staffList: { name: string; role: string }[]) {
     ]
   }
 
+  const hasSoloBusiness = staffList.filter(s => s.name).length === 0
+
   const summary: IQ[] = [
-    { id: 'knowledge_single_point', text: "Which tasks exist only in ONE person's head — if they left, the knowledge goes with them?", type: 'short-text' },
-    { id: 'owner_week_absent', text: "Owner: if you were away for one full week, what would break first?", type: 'short-text' },
-    { id: 'decision_structure', text: "Overall, how would you describe decision-making in this business?", type: 'dropdown', options: ['Everything goes back to the owner', 'Most things go back to the owner', 'Staff handle routine, owner handles unusual', 'Staff make most decisions independently', 'Staff are fully empowered in their roles'] },
-    { id: 'wrong_person', text: "Is anyone doing tasks clearly above or below their actual role? Name them and describe:", type: 'short-text' },
-    { id: 'surprise', text: "The most honest thing said today that the owner probably did not expect to hear:", type: 'short-text' },
+    { id: 'owner_week_absent', text: "If you were away for one full week, what would break first?", type: 'short-text' },
+    ...(!hasSoloBusiness ? [
+      { id: 'knowledge_single_point', text: "Which tasks exist only in ONE person's head — if they left, the knowledge goes with them?", type: 'short-text' } as IQ,
+      { id: 'decision_structure', text: "Overall, how would you describe decision-making in this business?", type: 'dropdown', options: ['Everything goes back to the owner', 'Most things go back to the owner', 'Staff handle routine, owner handles unusual', 'Staff make most decisions independently', 'Staff are fully empowered in their roles'] } as IQ,
+      { id: 'wrong_person', text: "Is anyone doing tasks clearly above or below their actual role? Name them and describe:", type: 'short-text' } as IQ,
+      { id: 'surprise', text: "Something you noticed today that you hadn't consciously thought about before:", type: 'short-text' } as IQ,
+    ] : [
+      { id: 'surprise', text: "Something you realised about your business while answering these questions:", type: 'short-text' } as IQ,
+    ]),
   ]
 
   return { owner, staff, summary }
