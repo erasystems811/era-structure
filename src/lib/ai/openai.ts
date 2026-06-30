@@ -282,35 +282,36 @@ Return this exact JSON structure:
   "closing_assessment": "One paragraph. Written directly to the owner. Honest, direct, human. Reference what they said and what the data showed. Name the real problem — not the symptoms. This is the consultant speaking person to person. No corporate language. No filler.",
 
   "eisenhower_matrix": {
-    "note": "Every quadrant MUST contain both assessment tasks (from what the owner told you) AND suggested tasks (tasks this type of business almost certainly does but the owner did not mention). Suggested tasks are not optional — they are a core part of the value here. The owner does not always list every task they do. Think about what a business of this type and size almost certainly does day-to-day — WhatsApp follow-ups, paying suppliers, reviewing revenue, posting on social media, managing staff — and add the relevant ones as suggested. Mark assessment tasks source: 'assessment', suggested tasks source: 'suggested'. For solopreneurs, Q3 means 'automate or outsource when you are ready' — label it that way. Do NOT force tasks into quadrants they do not belong in.",
-    "q1_do": [
-      {
-        "task": "Exact task name the owner will recognise",
-        "source": "assessment | suggested",
-        "note": "One sentence: why this is urgent AND important right now"
-      }
-    ],
-    "q2_schedule": [
-      {
-        "task": "...",
-        "source": "assessment | suggested",
-        "note": "Why this is important but can be planned, not reacted to"
-      }
-    ],
-    "q3_delegate": [
-      {
-        "task": "...",
-        "source": "assessment | suggested",
-        "note": "Why someone else (or a system/tool) should handle this, not the owner"
-      }
-    ],
-    "q4_eliminate": [
-      {
-        "task": "...",
-        "source": "assessment | suggested",
-        "note": "Why this wastes time without meaningful business value"
-      }
-    ]
+    "note": "Generate TWO versions of the matrix: current and ideal. Current shows how the owner's time is actually distributed today. Ideal shows how it should look once the ideal org structure from this report is fully in place — roles hired, SOPs documented, delegation working. The owner keeps this matrix long-term and checks it regularly to see if they are operating closer to the ideal. The difference between current and ideal is the transformation story of the report. In the ideal state, the owner's Q1 should be smaller (fewer fires), Q2 should be larger (more strategy), and Q3 should be nearly empty (delegated to people or systems). Every quadrant in both versions MUST contain both assessment tasks (from what the owner told you) AND suggested tasks (what this type of business almost certainly does). Mark assessment tasks source: 'assessment', suggested source: 'suggested'. For solopreneurs in the ideal state, Q3 means 'handled by a system or outsourced role'.",
+    "current": {
+      "q1_do": [
+        { "task": "Exact task name — what the owner is urgently handling today", "source": "assessment | suggested", "note": "Why this is urgent AND important right now" }
+      ],
+      "q2_schedule": [
+        { "task": "...", "source": "assessment | suggested", "note": "Why important but not yet planned" }
+      ],
+      "q3_delegate": [
+        { "task": "...", "source": "assessment | suggested", "note": "Why the owner is doing this but shouldn't be" }
+      ],
+      "q4_eliminate": [
+        { "task": "...", "source": "assessment | suggested", "note": "Why this wastes time without business value" }
+      ]
+    },
+    "ideal": {
+      "note_for_ai": "This is the owner's time once the ideal org is in place. Tasks that are currently in Q3 (owner doing them) should move here to Q3 (delegated to named role) or disappear entirely. New Q2 items should appear — strategic things the owner currently has no time for. Q1 should be shorter. Show the owner what their week looks like when the business runs without them being the centre of everything.",
+      "q1_do": [
+        { "task": "What remains genuinely urgent and important even in the ideal state", "source": "suggested", "note": "Why this still requires the owner personally even when fully structured" }
+      ],
+      "q2_schedule": [
+        { "task": "Strategic work the owner will finally have time for", "source": "suggested", "note": "Why this becomes possible once ops are delegated" }
+      ],
+      "q3_delegate": [
+        { "task": "Task currently owned by the owner — delegated to which role in the ideal org", "source": "assessment | suggested", "note": "Who owns this in the ideal structure and why the owner must fully exit it" }
+      ],
+      "q4_eliminate": [
+        { "task": "...", "source": "assessment | suggested", "note": "Still true in the ideal state — stop doing this" }
+      ]
+    }
   },
 
   "org_structure": {
@@ -476,10 +477,18 @@ const SECTION_SCHEMAS: Record<string, string> = {
   }
 ]`,
   eisenhower_matrix: `{
-  "q1_do": [{ "task": "...", "source": "assessment | suggested", "note": "Why urgent AND important" }],
-  "q2_schedule": [{ "task": "...", "source": "...", "note": "..." }],
-  "q3_delegate": [{ "task": "...", "source": "...", "note": "..." }],
-  "q4_eliminate": [{ "task": "...", "source": "...", "note": "..." }]
+  "current": {
+    "q1_do": [{ "task": "...", "source": "assessment | suggested", "note": "Why urgent AND important today" }],
+    "q2_schedule": [{ "task": "...", "source": "...", "note": "..." }],
+    "q3_delegate": [{ "task": "...", "source": "...", "note": "Why owner is doing this but shouldn't be" }],
+    "q4_eliminate": [{ "task": "...", "source": "...", "note": "..." }]
+  },
+  "ideal": {
+    "q1_do": [{ "task": "...", "source": "suggested", "note": "Still requires owner even in ideal state" }],
+    "q2_schedule": [{ "task": "...", "source": "suggested", "note": "Strategic work unlocked by delegation" }],
+    "q3_delegate": [{ "task": "...", "source": "assessment | suggested", "note": "Delegated to which role in ideal org" }],
+    "q4_eliminate": [{ "task": "...", "source": "...", "note": "..." }]
+  }
 }`,
 }
 
