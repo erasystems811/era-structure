@@ -363,45 +363,82 @@ Return this exact JSON structure:
   },
 
   "org_structure": {
-    "note": "This section shows the owner what their organisation actually looks like today — and what it should look like. Most small business owners have never seen their business drawn as a structure. They give one person multiple roles without realising it, they hire without a plan, and they don't know what role to hire next. Your job is to draw both pictures clearly using the actual people in this business. The current chart uses the real names and roles from the staff data. The ideal chart shows what the org SHOULD look like for this business type and size — including positions that don't exist yet. Use the hiring sequence to tell them exactly who to bring on first and why.",
+    "note": "This section has two jobs. First: show the owner exactly what their business looks like today — who is doing what, who is overloaded, what falls through the gaps. Second: show them the FULL org structure their business should eventually have. The ideal structure is a 5–10 year vision. It is NOT limited by what they can afford today. It shows the complete tree of roles a properly run version of this business type needs — every department, every function covered. The owner uses this to understand what they are building toward and in what order. A business with 2 staff today may need 15 roles in 5 years — show all of them. Do not be conservative. A real business has Sales, Marketing, Operations, Finance, Customer Service, HR (at scale), and any function specific to their industry. Draw the full tree using reports_to to show the hierarchy. Assign hire_priority 1 to whichever role the business needs most urgently given the current bottlenecks. The hiring_sequence then explains the logic — when to hire each role, what condition triggers each hire, and what problem each hire solves.",
 
     "current": {
       "people": [
         {
           "name": "Owner's actual name — pull from business data",
-          "title": "Business Owner",
-          "actual_roles": ["List every function this person is personally handling — sales, operations, finance, HR, customer service, etc. Be specific."],
-          "overload_note": "One sentence: what this concentration of roles is costing the business."
+          "title": "Business Owner / CEO",
+          "actual_roles": ["Every function this person is personally handling — sales, ops, finance, social media, customer service, hiring, delivery. Be exhaustive. Name specific tasks like 'writes all Instagram captions', 'handles all payment disputes', 'does all supplier negotiations'."],
+          "overload_note": "One sentence: what this concentration of roles is costing the business right now."
         }
       ],
       "structural_problems": [
-        "Specific problem 1 — e.g. 'No one person owns operations; every customer issue returns to the owner'",
-        "Specific problem 2 — e.g. 'Two staff members share the title Salesperson but have different responsibilities with no documented boundary'"
+        "Specific problem 1 — e.g. 'No one person owns sales; every deal requires the owner to close it personally'",
+        "Specific problem 2 — e.g. 'Finance and operations are both handled by the owner with no separation'"
       ]
     },
 
     "ideal": {
+      "note": "FULL long-term org structure — 5 to 10 year vision for a properly run version of this business. Include every role the business needs to operate without the owner being the bottleneck. Group roles by department. Use reports_to to build the tree. Give every non-owner role a hire_priority number (1 = hire first). Do not leave any major function uncovered.",
       "positions": [
         {
-          "title": "Business Owner",
-          "focus": "Strategy, key client relationships, and business development only",
+          "title": "CEO / Business Owner",
+          "department": "Leadership",
+          "focus": "Vision, strategy, investor/partner relationships, and high-stakes decisions only. Not involved in daily operations.",
           "reports_to": null,
-          "status": "exists"
+          "status": "exists",
+          "hire_priority": null
         },
         {
-          "title": "Example: Operations Manager",
-          "focus": "Day-to-day running — staff, customer fulfilment, quality control",
-          "reports_to": "Business Owner",
-          "status": "needs to be hired | can be assigned internally",
+          "title": "Operations Manager",
+          "department": "Operations",
+          "focus": "Owns day-to-day business running — fulfilment, quality control, team coordination, vendor management.",
+          "reports_to": "CEO / Business Owner",
+          "status": "needs to be hired",
           "hire_priority": 1
+        },
+        {
+          "title": "Sales Manager",
+          "department": "Sales",
+          "focus": "Owns the full sales pipeline — lead follow-up, closing deals, managing the sales team and targets.",
+          "reports_to": "CEO / Business Owner",
+          "status": "needs to be hired",
+          "hire_priority": 2
+        },
+        {
+          "title": "Marketing / Content Strategist",
+          "department": "Marketing",
+          "focus": "Brand strategy, content calendar, social media, campaigns, and brand voice.",
+          "reports_to": "CEO / Business Owner",
+          "status": "needs to be hired",
+          "hire_priority": 3
+        },
+        {
+          "title": "Finance & Admin Manager",
+          "department": "Finance",
+          "focus": "Bookkeeping, payroll, invoicing, cash flow tracking, tax filing, and financial reporting to the CEO.",
+          "reports_to": "CEO / Business Owner",
+          "status": "needs to be hired",
+          "hire_priority": 4
+        },
+        {
+          "title": "Customer Service Lead",
+          "department": "Operations",
+          "focus": "First point of contact for all customer enquiries, complaints, and after-sale support.",
+          "reports_to": "Operations Manager",
+          "status": "needs to be hired",
+          "hire_priority": 5
         }
       ],
       "hiring_sequence": [
-        "First hire: [Role name] — because [specific reason based on this business's biggest bottleneck]. This person frees the owner from [specific task]. Hire when monthly revenue consistently exceeds [figure].",
-        "Second hire: [Role name] — because [reason]. Hire when [condition]."
+        "First hire: [Role name] — because [specific bottleneck it solves in this business]. This person removes [specific task] from the owner. Hire when [specific measurable condition — revenue target, customer volume, etc.].",
+        "Second hire: [Role name] — because [reason specific to this business]. Hire when [condition].",
+        "Third hire onwards: [continue the sequence as far as it makes sense for this business type]"
       ],
       "immediate_restructure": [
-        "Action the owner can take today without hiring anyone — e.g. 'Designate [Name] as the single point of contact for all customer complaints. Remove yourself from that loop immediately.'"
+        "What the owner can reassign or reorganise today without hiring anyone — be specific about the person, the task, and the outcome."
       ]
     }
   },
@@ -515,13 +552,16 @@ const SECTION_SCHEMAS: Record<string, string> = {
   closing_assessment: `"One paragraph written directly to the owner. Honest, direct, human. No corporate language."`,
   org_structure: `{
   "current": {
-    "people": [{ "name": "...", "title": "...", "actual_roles": ["..."], "overload_note": "..." }],
-    "structural_problems": ["..."]
+    "people": [{ "name": "...", "title": "...", "actual_roles": ["every specific task they personally do"], "overload_note": "..." }],
+    "structural_problems": ["Specific structural problem"]
   },
   "ideal": {
-    "positions": [{ "title": "...", "focus": "...", "reports_to": null, "status": "exists | needs to be hired | can be assigned internally", "hire_priority": 1 }],
-    "hiring_sequence": ["First hire: ..."],
-    "immediate_restructure": ["Action without hiring..."]
+    "positions": [
+      { "title": "CEO / Business Owner", "department": "Leadership", "focus": "...", "reports_to": null, "status": "exists", "hire_priority": null },
+      { "title": "Role Name", "department": "Department name", "focus": "What this role owns end-to-end.", "reports_to": "CEO / Business Owner", "status": "needs to be hired | can be assigned internally", "hire_priority": 1 }
+    ],
+    "hiring_sequence": ["First hire: Role — reason — hire when condition.", "Second hire: ..."],
+    "immediate_restructure": ["What owner can reassign today without hiring"]
   }
 }`,
   process_map: `[
