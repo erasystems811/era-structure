@@ -301,6 +301,7 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
   }
 
   if (step === 'team-interview') {
+    const hasSoloBusiness = staffList.filter(s => s.name).length === 0
     const interviewSections = buildInterviewSections(staffList)
     return (
       <div className="space-y-5">
