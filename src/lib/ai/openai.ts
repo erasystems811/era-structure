@@ -165,13 +165,13 @@ HOW TO CALCULATE A LEAK:
 3. Calculate: [missed transactions or lost amount] × [frequency] × [owner's own price or margin]
 4. Show the exact chain: "Owner stated ₦X per job. Owner stated Y jobs per week. If 2 out of Y are lost to no follow-up, that is ₦X × 2 × 4.3 weeks = ₦Z/month"
 
-WHAT TO DO WHEN THE DATA IS INSUFFICIENT:
-If the owner did not give you a price, a volume, or a frequency you need to calculate a specific leak — do NOT invent it. Instead, set monthly_min and monthly_max both to 0 and write in calculation_note: "Cannot quantify — owner did not provide [specific missing figure]. Ask owner: [exact question that would give you the number]." A leak with 0 and an honest note is more valuable than a leak with a fabricated ₦50,000.
+WHEN OWNER DATA IS MISSING:
+If the owner did not provide a specific figure you need (e.g. transaction value, customer volume), use real Nigerian SME market rate estimates appropriate to their business type and scale — but label them clearly as market estimates in calculation_note. For example: "Estimated at ₦8,000 per service based on typical Lagos [business type] market rate." Nigerian benchmarks: Lagos/PH/Abuja service businesses ₦2,000–₦50,000 per transaction; FMCG margins 15–30%; food vendors 30–50%; logistics ₦500–₦3,000 per delivery; professional services ₦15,000–₦150,000 per engagement. Use what matches the business type and stated scale. Owner-stated figures always override these estimates.
 
 WHAT NOT TO DO:
-- Do not use "average Nigerian SME" estimates — this is not the average business, it is THIS business
-- Do not multiply vague "missed opportunity" by a round number you invented
-- Do not change the figures on regeneration unless the underlying data changed — if the owner said ₦150,000 monthly revenue, that anchor does not move
+- Do not use the same round invented number (₦50,000) for every leak — derive each one from the business type and scale
+- Do not change the figures on regeneration unless the underlying data or estimates are revised — figures must be consistent run to run
+- Do not ignore what the owner DID tell you — their actual stated figures always take priority over market estimates
 
 CRITICAL CONTEXT RULES — NEVER VIOLATE THESE:
 - If this is a solo operator (no staff), "everything going back to the owner" is NOT a structural problem — it is expected. Do not flag it as a contradiction or a finding. Solo operator problems are different: single point of failure, capacity ceiling, burnout, and inability to grow without first documenting their own processes.
