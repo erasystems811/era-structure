@@ -509,6 +509,9 @@ export async function generateSection(
     ? staffMembers.map(s => `- ${s.name}: ${s.role}`).join('\n')
     : 'Solo operator — no staff'
 
+  const currentSection = existingReport[section]
+  const hasInstruction = instruction && instruction.trim().length > 0
+
   const response = await openai.chat.completions.create({
     model: 'gpt-4o',
     temperature: 0.3,
@@ -516,21 +519,36 @@ export async function generateSection(
       { role: 'system', content: MASTER_PROMPT },
       {
         role: 'user',
-        content: `You are regenerating ONLY the "${section}" section of a diagnostic report for ${businessName} — a ${businessType} business.
+        content: `You are editing the "${section}" section of a diagnostic report for ${businessName} — a ${businessType} business.
 
 STAFF:
 ${staffBlock}
 
-LAYER 1 — SELF-ASSESSMENT:
+BUSINESS DATA — LAYER 1 (self-assessment):
 ${JSON.stringify(layer1, null, 2)}
 
-LAYER 2 — OWNER & TEAM INTERVIEW:
+BUSINESS DATA — LAYER 2 (owner interview):
 ${JSON.stringify(layer2, null, 2)}
 
-EXISTING REPORT (for context — use this to stay consistent with findings already made in other sections):
-${JSON.stringify(existingReport, null, 2)}
+OTHER REPORT SECTIONS (for consistency — do not change these, just stay aligned with them):
+${JSON.stringify({ ...existingReport, [section]: undefined }, null, 2)}
 
-${instruction ? `SPECIFIC INSTRUCTION FROM THE OPERATOR:\n${instruction}\n\nThis instruction takes priority. Adjust the section to reflect it while staying grounded in the business data.` : 'No specific instruction — regenerate this section with improved quality and specificity.'}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CURRENT CONTENT OF THE "${section}" SECTION — THIS IS WHAT YOU ARE EDITING:
+${JSON.stringify(currentSection, null, 2)}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${hasInstruction ? `OPERATOR INSTRUCTION: "${instruction}"
+
+HOW TO APPLY THIS INSTRUCTION:
+- Read the instruction carefully and understand what the operator ACTUALLY wants changed.
+- If they say "add X" — keep every existing item and add new ones for X. Do not remove anything.
+- If they say "remove X" or "delete X" — remove only the specific item(s) that match. Keep everything else exactly as is.
+- If they say "change X" or "make X more specific" — modify only that item. Leave all other items untouched.
+- If they say "add more" — keep all existing items and add additional ones.
+- If they say "rewrite" or "redo" or "start over" — then and only then rebuild the section from scratch.
+- When in doubt about what the operator means, interpret it as the SMALLEST possible change that satisfies the instruction. Never delete things you were not told to delete.
+- The operator is reviewing a real business report. They want surgical edits, not a new section.` : `No instruction given — improve the quality and specificity of this section. Keep the same structure and number of items. Make each item more specific to this exact business.`}
 
 Return ONLY the JSON value for the "${section}" field — exactly matching this schema:
 ${schema}
