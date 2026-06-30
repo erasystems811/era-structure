@@ -19,6 +19,22 @@ export async function GET(req: Request) {
   return NextResponse.json(data, { headers: corsHeaders() })
 }
 
+export async function PATCH(req: Request) {
+  if (!verifyOperatorSecret(req)) return forbidden()
+  const db = operatorAdminClient()
+  const { business_id, generated_content } = await req.json()
+  if (!business_id || generated_content === undefined)
+    return NextResponse.json({ error: 'business_id and generated_content required' }, { status: 400, headers: corsHeaders() })
+
+  const { error } = await db
+    .from('reports')
+    .update({ generated_content })
+    .eq('business_id', business_id)
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders() })
+  return NextResponse.json({ success: true }, { headers: corsHeaders() })
+}
+
 export async function POST(req: Request) {
   if (!verifyOperatorSecret(req)) return forbidden()
   const db = operatorAdminClient()
