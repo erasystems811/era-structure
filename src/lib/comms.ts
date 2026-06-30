@@ -15,6 +15,15 @@ export interface NotifyResult {
   email: 'sent' | 'skipped' | 'failed'
 }
 
+function toE164(phone: string | undefined | null): string | undefined {
+  if (!phone) return undefined
+  const digits = phone.replace(/\D/g, '')
+  if (digits.startsWith('234')) return `+${digits}`
+  if (digits.startsWith('0') && digits.length === 11) return `+234${digits.slice(1)}`
+  if (digits.length >= 10) return `+${digits}`
+  return undefined
+}
+
 // Throws if ERA Comms is not configured or returns an error.
 export async function notify(opts: NotifyOptions): Promise<NotifyResult> {
   if (!COMMS_URL || !COMMS_SECRET) {
@@ -88,7 +97,7 @@ export function reportReadyNotification(opts: {
 </html>`
 
   return {
-    to:          ownerPhone ?? undefined,
+    to:          toE164(ownerPhone),
     email:       ownerEmail ?? undefined,
     subject:     `Your ERA Structure report for ${businessName} is ready`,
     message,
