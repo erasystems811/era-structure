@@ -160,9 +160,9 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
 
   // Progress steps
   const steps = [
-    { label: 'Business Assessment', done: !!layer1 },
+    { label: 'Assessment', done: !!layer1 },
     { label: 'Team Interview', done: !!layer2 },
-    { label: 'Your Report', done: !!report },
+    { label: 'Report', done: !!report },
   ]
 
   if (step === 'intro') {
@@ -184,14 +184,24 @@ export function AssessmentFlow({ business, layer1, observation, layer2, report, 
         </div>
 
         <Card>
-          <CardBody className="py-6">
+          <CardBody className="py-6 space-y-3">
             <p className="text-sm text-[#1A1A2E] leading-relaxed">
-              This assessment has two stages. First, you answer specific questions about your business — how it runs, who does what, how money moves. Then you and each of your staff members answer a short team interview so we understand exactly how the business really operates day to day.
+              This process has two stages and should take about 30–45 minutes total.
             </p>
-            <p className="text-sm text-[#1A1A2E] leading-relaxed mt-3">
-              At the end you receive a full diagnostic report — including every structural gap, every revenue leak calculated in naira, and the exact sequence in which to fix them.
+            <div className="space-y-2">
+              <div className="flex gap-3">
+                <span className="text-xs font-bold text-[#C9952B] mt-0.5 w-4 shrink-0">1</span>
+                <p className="text-sm text-[#1A1A2E]"><span className="font-semibold">Business Assessment</span> — you answer questions about how your business runs today. Be honest, not how you wish it was.</p>
+              </div>
+              <div className="flex gap-3">
+                <span className="text-xs font-bold text-[#C9952B] mt-0.5 w-4 shrink-0">2</span>
+                <p className="text-sm text-[#1A1A2E]"><span className="font-semibold">Team Interview</span> — you and each staff member answer a short set of questions separately. This is where we find out how the business really runs, not just how you think it does.</p>
+              </div>
+            </div>
+            <p className="text-sm text-[#666] leading-relaxed">
+              At the end you receive a full report — every gap identified, revenue leakage calculated in naira, and the exact order to fix things.
             </p>
-            <Button className="mt-5" onClick={() => setStep('layer1')}>Start assessment</Button>
+            <Button className="mt-2" onClick={() => setStep('layer1')}>Start assessment</Button>
           </CardBody>
         </Card>
       </div>
