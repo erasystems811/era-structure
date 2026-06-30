@@ -550,21 +550,31 @@ HOW TO APPLY THIS INSTRUCTION:
 - When in doubt about what the operator means, interpret it as the SMALLEST possible change that satisfies the instruction. Never delete things you were not told to delete.
 - The operator is reviewing a real business report. They want surgical edits, not a new section.` : `No instruction given — improve the quality and specificity of this section. Keep the same structure and number of items. Make each item more specific to this exact business.`}
 
-Return ONLY the JSON value for the "${section}" field — exactly matching this schema:
+Return a JSON object with a single key named exactly "${section}" containing the updated value.
+The value must match this schema:
 ${schema}
 
-Do not wrap in an outer object. Return just the value directly.`,
+Example format: { "${section}": <value here> }`,
       },
     ],
     response_format: { type: 'json_object' },
   })
 
   const raw = JSON.parse(response.choices[0].message.content ?? '{}')
-  // The model wraps in json_object mode — unwrap if it returned { [section]: value }
-  if (Object.keys(raw).length === 1) {
-    const key = Object.keys(raw)[0]
-    return raw[key]
-  }
+
+  // GPT json_object mode always wraps in an object even when we ask for a raw value.
+  // Priority 1: the model used the exact section name as the key — most reliable
+  if (raw[section] !== undefined) return raw[section]
+
+  // Priority 2: ignore noise keys (note, message, explanation) and return the real data key
+  const NOISE_KEYS = new Set(['note', 'note_for_ai', 'message', 'explanation', 'comment', 'response'])
+  const dataKeys = Object.keys(raw).filter(k => !NOISE_KEYS.has(k))
+  if (dataKeys.length === 1) return raw[dataKeys[0]]
+
+  // Priority 3: if there's genuinely only one key total, return its value
+  if (Object.keys(raw).length === 1) return raw[Object.keys(raw)[0]]
+
+  // Fallback: return as-is and let the caller handle it
   return raw
 }
 

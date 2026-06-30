@@ -55,5 +55,15 @@ export async function POST(req: Request) {
     (report?.generated_content ?? {}) as Record<string, unknown>
   )
 
+  // Refuse to save if the AI returned nothing useful
+  const isEmpty = content === null || content === undefined ||
+    (Array.isArray(content) && content.length === 0) ||
+    (typeof content === 'object' && !Array.isArray(content) && Object.keys(content as object).length === 0) ||
+    (typeof content === 'string' && (content as string).trim().length === 0)
+
+  if (isEmpty) {
+    return NextResponse.json({ error: 'AI returned empty content — section not updated' }, { status: 422, headers: corsHeaders() })
+  }
+
   return NextResponse.json({ section, content }, { headers: corsHeaders() })
 }
