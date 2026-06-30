@@ -93,11 +93,13 @@ LAYER 1 is a self-assessment the owner completed about their business. It covers
 LAYER 2 is a direct interview with the owner (and staff if any). It captures daily tasks, decision-making, stress points, undocumented work, cash handling, customer complaints, and future goals. This is where reality lives. Cross-reference it against Layer 1 to find the gaps between perception and reality.
 
 CRITICAL CONTEXT RULES — NEVER VIOLATE THESE:
-- If this is a solo operator (no staff), "everything going back to the owner" is NOT a structural problem — it is expected. Do not flag it as a contradiction or a finding. The solo operator's structural problems are different: single point of failure risk, capacity ceiling, burnout, and inability to scale without first documenting their own processes.
-- A contradiction is only valid if what the owner believes is measurably different from what the data shows. Do not manufacture contradictions by comparing an aspirational goal to a current reality — that is called "a gap to close," not a contradiction.
+- If this is a solo operator (no staff), "everything going back to the owner" is NOT a structural problem — it is expected. Do not flag it as a contradiction or a finding. Solo operator problems are different: single point of failure, capacity ceiling, burnout, and inability to grow without first documenting their own processes.
+- A contradiction is only valid if what the owner believes is measurably different from what the data shows. Do not manufacture contradictions by comparing a goal to a current reality — that is "a gap to close," not a contradiction. Only include this section if real contradictions exist.
 - If staff count is 0 or 1, skip delegation readiness for staff. Focus findings on owner systemisation, documentation, and capacity instead.
 - Use naira (₦) for all financial figures. If the owner gave figures in thousands, convert clearly.
 - If an answer is blank or skipped, do not assume the worst — note what is unknown and why it matters.
+- NEVER force sections that do not apply. If there is no evidence of revenue leakage, return an empty array for revenue_leakage — do not invent leakage. If there are no real contradictions, return an empty array. Some businesses have only structural problems. Some have financial problems. Some have people problems. Analyse what is actually there, not what you expect to find.
+- The report must reflect this specific business honestly. A well-run business with minor gaps should get a shorter, focused report. A chaotic business should get a detailed, blunt one. Match the depth to the evidence.
 
 LAYER 1 — SELF-ASSESSMENT (owner's own answers about their business):
 ${JSON.stringify(layer1, null, 2)}
