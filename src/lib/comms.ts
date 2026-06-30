@@ -1,6 +1,3 @@
-// ERA Comms integration — fire-and-forget notifications.
-// Never throws — logs failures silently so callers are not blocked.
-
 const COMMS_URL    = process.env.ERA_COMMS_API_URL
 const COMMS_SECRET = process.env.ERA_COMMS_OPERATOR_SECRET
 
@@ -12,21 +9,33 @@ export interface NotifyOptions {
   htmlMessage?: string
 }
 
-export async function notify(opts: NotifyOptions): Promise<void> {
-  if (!COMMS_URL || !COMMS_SECRET) return // not configured — skip silently
+export interface NotifyResult {
+  whatsapp: 'sent' | 'skipped' | 'failed'
+  email: 'sent' | 'skipped' | 'failed'
+}
 
-  try {
-    await fetch(`${COMMS_URL}/v1/admin/notify`, {
-      method:  'POST',
-      headers: {
-        'Content-Type':    'application/json',
-        'X-Operator-Secret': COMMS_SECRET,
-      },
-      body: JSON.stringify(opts),
-    })
-  } catch {
-    // fire-and-forget — never block the caller
+// Throws if ERA Comms is not configured or returns an error.
+export async function notify(opts: NotifyOptions): Promise<NotifyResult> {
+  if (!COMMS_URL || !COMMS_SECRET) {
+    throw new Error('ERA Comms is not configured. Set ERA_COMMS_API_URL and ERA_COMMS_OPERATOR_SECRET.')
   }
+
+  const res = await fetch(`${COMMS_URL}/v1/admin/notify`, {
+    method:  'POST',
+    headers: {
+      'Content-Type':      'application/json',
+      'X-Operator-Secret': COMMS_SECRET,
+    },
+    body: JSON.stringify(opts),
+  })
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({ error: res.statusText }))
+    throw new Error(`ERA Comms notify failed (${res.status}): ${(body as { error?: string; message?: string }).message ?? (body as { error?: string }).error ?? res.statusText}`)
+  }
+
+  const data = await res.json() as { ok: boolean; results: NotifyResult }
+  return data.results
 }
 
 export function reportReadyNotification(opts: {

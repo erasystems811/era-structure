@@ -41,6 +41,34 @@ export async function POST(req: Request) {
   const db = operatorAdminClient()
   const { report_id, admin_notes } = await req.json()
 
+  // Fetch business details before releasing — needed for notification
+  const { data: reportRow } = await db.from('reports').select('business_id').eq('id', report_id).single()
+  if (!reportRow) return NextResponse.json({ error: 'Report not found' }, { status: 404, headers: corsHeaders() })
+
+  const { data: biz } = await db
+    .from('businesses')
+    .select('name, owner_name, owner_phone, owner_email')
+    .eq('id', reportRow.business_id)
+    .single()
+
+  // Send notification first — release is blocked until comms confirms
+  if (biz) {
+    const portalUrl = process.env.ERA_STRUCTURE_CLIENT_URL ?? 'https://era-structure-client.railway.app'
+    try {
+      await notify(reportReadyNotification({
+        ownerName:    biz.owner_name,
+        businessName: biz.name,
+        ownerPhone:   biz.owner_phone,
+        ownerEmail:   biz.owner_email,
+        portalUrl,
+      }))
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'ERA Comms notification failed'
+      return NextResponse.json({ error: message }, { status: 502, headers: corsHeaders() })
+    }
+  }
+
+  // Notification sent — now mark the report released
   const { error } = await db.from('reports').update({
     status: 'released',
     released_at: new Date().toISOString(),
@@ -48,28 +76,7 @@ export async function POST(req: Request) {
   }).eq('id', report_id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders() })
 
-  const { data: report } = await db.from('reports').select('business_id').eq('id', report_id).single()
-  if (report) {
-    await db.from('businesses').update({ stage: 'guide' }).eq('id', report.business_id)
-
-    // Notify owner via ERA Comms (fire-and-forget — never blocks release)
-    const { data: biz } = await db
-      .from('businesses')
-      .select('name, owner_name, owner_phone, owner_email')
-      .eq('id', report.business_id)
-      .single()
-
-    if (biz) {
-      const portalUrl = process.env.ERA_STRUCTURE_CLIENT_URL ?? 'https://era-structure-client.railway.app'
-      notify(reportReadyNotification({
-        ownerName:   biz.owner_name,
-        businessName: biz.name,
-        ownerPhone:  biz.owner_phone,
-        ownerEmail:  biz.owner_email,
-        portalUrl,
-      }))
-    }
-  }
+  await db.from('businesses').update({ stage: 'guide' }).eq('id', reportRow.business_id)
 
   return NextResponse.json({ success: true }, { headers: corsHeaders() })
 }
