@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { AssessmentFlow } from '@/components/client/AssessmentFlow'
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
 export default async function AssessmentPage() {
   const supabase = await createClient()
@@ -38,15 +39,17 @@ export default async function AssessmentPage() {
   ])
 
   return (
-    <AssessmentFlow
-      business={business as unknown as { name: string; business_types: { name: string; id: string } | null }}
-      layer1={layer1}
-      observation={null}
-      layer2={layer2}
-      report={report}
-      questions={questions ?? []}
-      staff={staff ?? []}
-      businessId={businessId ?? ''}
-    />
+    <ErrorBoundary>
+      <AssessmentFlow
+        business={business as unknown as { name: string; business_types: { name: string; id: string } | null }}
+        layer1={layer1}
+        observation={null}
+        layer2={layer2}
+        report={report}
+        questions={questions ?? []}
+        staff={staff ?? []}
+        businessId={businessId ?? ''}
+      />
+    </ErrorBoundary>
   )
 }
