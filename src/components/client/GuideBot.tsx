@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import type { GuideSession, ChatMessage } from '@/types'
-import { Send, Mic, Square } from 'lucide-react'
+import { Send, Mic, Square, Loader2 } from 'lucide-react'
 
 interface Props {
   lastSession: GuideSession | null
@@ -77,28 +77,34 @@ export function GuideBot({ lastSession, businessId }: Props) {
     setStreaming(false)
   }
 
-  async function startRecording() {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-    const recorder = new MediaRecorder(stream)
-    chunksRef.current = []
-    recorder.ondataavailable = e => chunksRef.current.push(e.data)
-    recorder.onstop = async () => {
-      const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
-      const fd = new FormData()
-      fd.append('audio', blob, 'voice.webm')
-      fd.append('business_id', businessId)
-      const res = await fetch('/api/ai/sop', { method: 'POST', body: fd })
-      const data = await res.json()
-      if (data.text) sendMessage(`Here is the process I want documented: ${data.text}`)
+  async function toggleRecording() {
+    if (recording) {
+      mediaRef.current?.stop()
+      setRecording(false)
+      return
     }
-    recorder.start()
-    mediaRef.current = recorder
-    setRecording(true)
-  }
-
-  function stopRecording() {
-    mediaRef.current?.stop()
-    setRecording(false)
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const recorder = new MediaRecorder(stream)
+      chunksRef.current = []
+      recorder.ondataavailable = e => { if (e.data.size > 0) chunksRef.current.push(e.data) }
+      recorder.onstop = async () => {
+        stream.getTracks().forEach(t => t.stop())
+        if (chunksRef.current.length === 0) return
+        const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
+        const fd = new FormData()
+        fd.append('audio', blob, 'voice.webm')
+        fd.append('business_id', businessId)
+        const res = await fetch('/api/ai/sop', { method: 'POST', body: fd })
+        const data = await res.json()
+        if (data.text) sendMessage(data.text)
+      }
+      recorder.start()
+      mediaRef.current = recorder
+      setRecording(true)
+    } catch {
+      alert('Microphone access denied. Please allow microphone access in your browser settings.')
+    }
   }
 
   return (
@@ -133,27 +139,33 @@ export function GuideBot({ lastSession, businessId }: Props) {
       </div>
 
       {/* Input */}
-      <div className="bg-white border border-[#0D1B3E]/8 rounded-2xl p-3 flex gap-2 items-end">
-        <textarea
-          className="flex-1 resize-none text-sm text-[#1A1A2E] placeholder:text-[#999] focus:outline-none max-h-32 min-h-[40px]"
-          placeholder="Type your message..."
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input) } }}
-          rows={1}
-        />
+      <div className={`bg-white border rounded-2xl p-3 flex gap-2 items-end transition-colors ${recording ? 'border-red-400 bg-red-50' : 'border-[#0D1B3E]/8'}`}>
+        {recording ? (
+          <div className="flex-1 flex items-center gap-2 min-h-[40px]">
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+            <span className="text-sm text-red-600 font-medium">Recording… tap the button to stop</span>
+          </div>
+        ) : (
+          <textarea
+            className="flex-1 resize-none text-sm text-[#1A1A2E] placeholder:text-[#999] focus:outline-none max-h-32 min-h-[40px]"
+            placeholder="Type your message..."
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(input) } }}
+            rows={1}
+          />
+        )}
         <div className="flex gap-1.5 flex-shrink-0">
           <button
-            onMouseDown={startRecording}
-            onMouseUp={stopRecording}
-            onTouchStart={startRecording}
-            onTouchEnd={stopRecording}
-            className={`p-2 rounded-xl transition-colors ${recording ? 'bg-red-500 text-white' : 'text-[#999] hover:text-[#0D1B3E] hover:bg-[#0D1B3E]/5'}`}
-            title="Hold to record voice note for SOP"
+            type="button"
+            onClick={toggleRecording}
+            className={`p-2 rounded-xl transition-colors ${recording ? 'bg-red-500 text-white animate-pulse' : 'text-[#999] hover:text-[#0D1B3E] hover:bg-[#0D1B3E]/5'}`}
+            title={recording ? 'Tap to stop recording' : 'Tap to record a voice note'}
           >
             {recording ? <Square size={16} /> : <Mic size={16} />}
           </button>
           <button
+            type="button"
             onClick={() => sendMessage(input)}
             disabled={!input.trim() || sending}
             className="p-2 rounded-xl bg-[#0D1B3E] text-white disabled:opacity-40 hover:bg-[#0D1B3E]/90 transition-colors"
